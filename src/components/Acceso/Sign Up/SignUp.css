@@ -1,0 +1,38 @@
+.c-reg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    
+  }
+  
+  .form-container {
+    width: 450px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    border: solid 2px rgb(50, 147, 232);
+    border-radius: 8px;
+    padding: 20px 30px;
+}
+
+.space-between-inputs {
+    margin-bottom: 15px;
+}
+
+.space-between-button {
+    margin-top: 15px;
+}
+.space-between-title {
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+.input-space {
+    margin-bottom: 10px;
+}
+.type-account {
+    margin-right: 65px;
+    display: inline;
+}
+.type-acoount-cont {
+    margin-top: 15px;
+}
