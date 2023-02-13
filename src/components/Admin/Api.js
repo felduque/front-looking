@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "https://looking.fly.dev/";
+const url = "https://looking.fly.dev";
 
 export function getAllUsers() {
   try {
