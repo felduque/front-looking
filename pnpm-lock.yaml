@@ -7,6 +7,7 @@ specifiers:
   '@mui/material': ^5.11.7
   '@mui/x-data-grid': ^5.17.22
   '@react-google-maps/api': ^2.18.1
+  '@react-oauth/google': ^0.7.0
   '@reduxjs/toolkit': ^1.9.2
   '@stripe/react-stripe-js': ^1.16.4
   '@stripe/stripe-js': ^1.46.0
@@ -15,6 +16,7 @@ specifiers:
   '@vitejs/plugin-react': ^3.1.0
   axios: ^1.3.2
   bulma: ^0.9.4
+  bulma-tooltip: ^3.0.2
   date-fns: ^2.29.3
   react: ^18.2.0
   react-currency-input-field: ^3.6.10
@@ -28,6 +30,7 @@ specifiers:
   react-router-dom: ^6.8.0
   react-select: ^5.7.0
   redux: ^4.2.1
+  sweetalert2: ^11.7.1
   vite: ^4.1.0
 
 dependencies:
@@ -37,11 +40,13 @@ dependencies:
   '@mui/material': 5.11.7_rqh7qj4464ntrqrt6banhaqg4q
   '@mui/x-data-grid': 5.17.22_juhrskmuvyorwpajghq6zhdw2q
   '@react-google-maps/api': 2.18.1_biqbaboplfbrettd7655fr4n2y
+  '@react-oauth/google': 0.7.0_biqbaboplfbrettd7655fr4n2y
   '@reduxjs/toolkit': 1.9.2_k4ae6lp43ej6mezo3ztvx6pykq
   '@stripe/react-stripe-js': 1.16.4_keartrz7uyerl3wkpjpue4xbhy
   '@stripe/stripe-js': 1.46.0
   axios: 1.3.2
   bulma: 0.9.4
+  bulma-tooltip: 3.0.2
   date-fns: 2.29.3
   react: 18.2.0
   react-currency-input-field: 3.6.10_react@18.2.0
@@ -55,6 +60,7 @@ dependencies:
   react-router-dom: 6.8.0_biqbaboplfbrettd7655fr4n2y
   react-select: 5.7.0_57czaiyk6rdr5iy5tfs5pior4u
   redux: 4.2.1
+  sweetalert2: 11.7.1
 
 devDependencies:
   '@types/react': 18.0.27
@@ -871,6 +877,16 @@ packages:
     resolution: {integrity: sha512-jOuyqzWLeXvQcoAu6TCVWHAuko+sDt0JjawNHBGqUNLywMtTCvYP0L0PiqJZOUCUeRYGdUy0AKxQ+30vAkvwag==}
     dev: false
 
+  /@react-oauth/google/0.7.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-KLLYlLYYpXf1zmcrsJPAxImvoq2b0Rs0Pi/6GYfdwjmTh66Pf6jkZ4fpO10tuJuUPWvEeqloPEC/i4BySgbYVQ==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
   /@reduxjs/toolkit/1.9.2_k4ae6lp43ej6mezo3ztvx6pykq:
     resolution: {integrity: sha512-5ZAZ7hwAKWSii5T6NTPmgIBUqyVdlDs+6JjThz6J6dmHLDm6zCzv2OjHIFAi3Vvs1qjmXU0bm6eBojukYXjVMQ==}
     peerDependencies:
@@ -1015,6 +1031,10 @@ packages:
       electron-to-chromium: 1.4.286
       node-releases: 2.0.9
       update-browserslist-db: 1.0.10_browserslist@4.21.5
+
+  /bulma-tooltip/3.0.2:
+    resolution: {integrity: sha512-CsT3APjhlZScskFg38n8HYL8oYNUHQtcu4sz6ERarxkUpBRbk9v0h/5KAvXeKapVSn2dp9l7bOGit5SECP8EWQ==}
+    dev: false
 
   /bulma/0.9.4:
     resolution: {integrity: sha512-86FlT5+1GrsgKbPLRRY7cGDg8fsJiP/jzTqXXVqiUZZ2aZT8uemEOHlU1CDU+TxklPEZ11HZNNWclRBBecP4CQ==}
@@ -1663,6 +1683,10 @@ packages:
   /supports-preserve-symlinks-flag/1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  /sweetalert2/11.7.1:
+    resolution: {integrity: sha512-+1bnkbqBl64FnZmi3g4SzAi4F3pL3S2jF1YQvrysv4GbgizfeFqGkJopxR3FnV/eJm6w2SQ2oAmCxSIBjgP/ag==}
+    dev: false
 
   /to-fast-properties/2.0.0:
     resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
