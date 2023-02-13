@@ -45,7 +45,7 @@ export default function Login() {
     if (auth.role === "Client") {
       try {
         const response = await axios.post(
-          `https://front-looking.vercel.app/client/login`,
+          `https://looking.fly.dev/client/login`,
           JSON.stringify({ email: email, password: password }),
           {
             headers: { "Content-Type": "application/json" },
@@ -86,7 +86,7 @@ export default function Login() {
     } else {
       try {
         const response = await axios.post(
-          `https://front-looking.vercel.app/tenant/login`,
+          `https://looking.fly.dev/tenant/login`,
           JSON.stringify({ email: email, password: password }),
           {
             headers: { "Content-Type": "application/json" },

@@ -4,7 +4,7 @@ import "./Login.css";
 
 const LoginGoogle = () => {
   const { handleGoogle, loading, error } = useFetch(
-    "https://front-looking.vercel.app/loginGoogle"
+    "https://looking.fly.dev/loginGoogle"
   );
 
   useEffect(() => {
