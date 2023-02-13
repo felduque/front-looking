@@ -4,12 +4,14 @@ import useAuth from "../hooks/useAuth";
 import axios from "axios";
 import usermailIcon from "../../../assets/usermail-login.png";
 import userPasswordIcon from "../../../assets/key-login.png";
+import leftarrow from "../../../assets/flecha-izquierda.png";
 import "./Login.css";
+import LoginGoogle from "./LoginGoogle";
 
 //const LOGIN_URL = "/client/login";
 
 export default function Login() {
-  const { setAuth } = useAuth();
+  const { auth, setAuth } = useAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -17,6 +19,7 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  //const [role, setRole] = useState("");
 
   const [errMsg, setErrMsg] = useState("");
 
@@ -29,50 +32,109 @@ export default function Login() {
     }
   }, []);
 
+  /* const roleMapping = {
+    "davidezfl3prueba@gmail.com": "Client",
+    "felipederuque@gmail.com": "Admin",
+    "davidezflogin@gmail.com": "Admin",
+    "davidezflprueba2@gmail.com": "Tenant",
+  };*/
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await axios.post(
-        `https://looking.fly.dev/client/login`,
-        JSON.stringify({ email: email, password: password }),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
-      console.log(response);
-      //console.log(JSON.stringify(response));
-      const accessToken = response?.data?.accessToken;
-      const idClient = response?.data?.userId;
-
-      setAuth({ email, password, accessToken });
-      console.log(email, password, accessToken);
-      localStorage.setItem(
-        "auth",
-        JSON.stringify({ email, password, idClient, accessToken })
-      );
-      setEmail("");
-      setPassword("");
-      navigate(from, { replace: true });
-      window.location.reload();
-    } catch (err) {
-      if (!err?.response) {
-        setErrMsg("Sin respuesta del servidor(back)");
-      } else if (err.response?.status === 400) {
-        setErrMsg("Creo que escribiste mal la contraseña");
-      } else if (err.response?.status === 401) {
-        setErrMsg(
-          "No estás registrado, no vas a poder entrar sin registrarte :)"
+    if (auth.role === "Client") {
+      try {
+        const response = await axios.post(
+          `https://front-looking.vercel.app/client/login`,
+          JSON.stringify({ email: email, password: password }),
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }
         );
-      } else {
-        setErrMsg("Error al ingresar");
+        console.log(response);
+        //console.log(JSON.stringify(response));
+        const accessToken = response?.data?.accessToken;
+        const idClient = response?.data?.userId;
+        const role = response?.data?.role;
+        //const role = roleMapping[email] || "default";
+
+        setAuth({ email, password, accessToken, role });
+        console.log(email, password, accessToken);
+        localStorage.setItem(
+          "auth",
+          JSON.stringify({ email, password, idClient, accessToken, role })
+        );
+        setEmail("");
+        setPassword("");
+        //setRole("");
+        navigate(from, { replace: true });
+        window.location.reload();
+      } catch (err) {
+        if (!err?.response) {
+          setErrMsg("Sin respuesta del servidor(back)");
+        } else if (err.response?.status === 400) {
+          setErrMsg("Creo que escribiste mal la contraseña");
+        } else if (err.response?.status === 401) {
+          setErrMsg(
+            "No estás registrado, no vas a poder entrar sin registrarte :)"
+          );
+        } else {
+          setErrMsg("Error al ingresar");
+        }
+      }
+    } else {
+      try {
+        const response = await axios.post(
+          `https://front-looking.vercel.app/tenant/login`,
+          JSON.stringify({ email: email, password: password }),
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }
+        );
+        console.log(response);
+        //console.log(JSON.stringify(response));
+        const accessToken = response?.data?.accessToken;
+        const idTenant = response?.data?.userId;
+        const role = response?.data?.role;
+        //const role = roleMapping[email] || "default";
+
+        setAuth({ email, password, accessToken, role });
+        console.log(email, password, accessToken);
+        localStorage.setItem(
+          "auth",
+          JSON.stringify({ email, password, idTenant, accessToken, role })
+        );
+        setEmail("");
+        setPassword("");
+        //setRole("");
+        navigate(from, { replace: true });
+        window.location.reload();
+      } catch (err) {
+        if (!err?.response) {
+          setErrMsg("Sin respuesta del servidor(back)");
+        } else if (err.response?.status === 400) {
+          setErrMsg("Creo que escribiste mal la contraseña");
+        } else if (err.response?.status === 401) {
+          setErrMsg(
+            "No estás registrado, no vas a poder entrar sin registrarte :)"
+          );
+        } else {
+          setErrMsg("Error al ingresar");
+        }
       }
     }
   };
+  function back() {
+    navigate(from, { replace: true });
+  }
 
   return (
     <>
+      <div className="opacityimg">
+        <img src={leftarrow} alt="" className="btnBackLogin" onClick={back} />
+      </div>
       <div className="container-page-login">
         <div className="container-login">
           <div className="form-container-login">
@@ -129,6 +191,7 @@ export default function Login() {
                 <span>
                   <Link to="/register">Registrarme</Link>
                 </span>
+                <LoginGoogle />
               </p>
             </section>
           </div>

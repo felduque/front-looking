@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 //import "../.././index.css";
 import "./NavBar.css";
 
+import SearchBar from "./SearchBar/SearchBar";
+
 import useLogout from "../Acceso/Sign In/useLogout";
-import mapIcon from "../../assets/icon-map.png";
+import logoIcon from "../../assets/logo-icon.png";
 import userIcon from "../../assets/user-default-icon.png";
 
-export default function Navbar() {
+export default function Navbar({ isLogued }) {
   const [auth, setAuth] = useState(null);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
   const logout = useLogout();
 
   useEffect(() => {
@@ -24,15 +23,16 @@ export default function Navbar() {
   const signOut = async () => {
     await logout();
     localStorage.removeItem("auth");
-    navigate(from, { replace: true });
+    localStorage.removeItem("user");
     window.location.reload();
+    setAuth(null);
   };
   return (
     <nav className="navbar" role="navigation" aria-label="main navigation">
       <div className="navbar-brand space-margin-left">
         <Link to="/" className="navbar-item">
+          <img src={logoIcon} width="30" height="20" />
           <strong>LookingPlace</strong>
-          <img src={mapIcon} width="30" height="20" />
         </Link>
         <a
           role="button"
@@ -49,51 +49,55 @@ export default function Navbar() {
 
       <div id="navbarBasicExample" className="navbar-menu">
         <div className="navbar-start">
-        <Link to="/suscribe" className="navbar-item">
+          <Link to="/suscribe" className="navbar-item">
             Suscripción
-        </Link>
+          </Link>
         </div>
+      </div>
 
-        <div className="navbar-end">
-          <div className="navbar-item">
-            <div className="buttons">
-              {
-                // Poner ! en auth para testear paneles sin iniciar sesión
-                auth ? (
-                  <div
-                    className="navbar-item has-dropdown is-hoverable space-margin-right">
-                    <a className="navbar-link">
-                      <img src={userIcon} width="30" height="40" />
+      {location.pathname === "/" ? <SearchBar /> : null}
+
+      <div className="navbar-end">
+        <div className="navbar-item">
+          <div className="buttons">
+            {
+              // Poner ! en auth para testear paneles sin iniciar sesión
+              auth || isLogued.email ? (
+                <div className="navbar-item has-dropdown is-hoverable">
+                  <a className="navbar-link">
+                    <img src={userIcon} width="30" height="40" />
+                  </a>
+
+                  <div className="navbar-dropdown is-right">
+                    <Link to="/createProperty" className="navbar-item">
+                      Publicar propiedad
+                    </Link>
+                    <Link to="/settings" className="navbar-item">
+                      Dashboard
+                    </Link>
+                    <hr className="navbar-divider" />
+                    <a className="navbar-item" onClick={signOut}>
+                      Salir
                     </a>
-
-                    <div className="navbar-dropdown">
-                      <Link to="/createProperty" className="navbar-item">
-                          Publicar propiedad
-                      </Link>
-                      <Link to="/settings" className="navbar-item">
-                          Dashboard
-                      </Link>
-                      <hr className="navbar-divider" />
-                      <a className="navbar-item" onClick={signOut}>
-                        Salir
-                      </a>
-                    </div>
                   </div>
-                ) : (
-                  <div>
-                    <Link to="/register" className="button is-primary">
-                          <strong>Registrarse</strong>
-                    </Link>
-                    <Link to="/login" className="button is-light">
-                        Ingresar
-                    </Link>
-                    <Link to="/createProperty" className="button is-light">
-                        Publicar propiedad
-                    </Link>
-                  </div>
-                )
-              }
-            </div>
+                </div>
+              ) : (
+                <div>
+                  <Link to="/register" className="button is-primary">
+                    <strong>Registrarse</strong>
+                  </Link>
+                  <Link to="/login" className="button is-info is-outlined">
+                    Ingresar
+                  </Link>
+                  <Link
+                    to="/createProperty"
+                    className="button is-link is-outlined"
+                  >
+                    Publicar propiedad
+                  </Link>
+                </div>
+              )
+            }
           </div>
         </div>
       </div>

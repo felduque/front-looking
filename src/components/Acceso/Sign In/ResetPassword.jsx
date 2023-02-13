@@ -22,7 +22,7 @@ export default function ResetPassword() {
       return;
     }
 
-    //`https://looking.fly.dev/reset/${match.params.id}/${match.params.accessToken}`
+    //`https://food-app.fly.dev/reset/${match.params.id}/${match.params.accessToken}`
 
     axios
       .post(`/reset/${id}/${token}`, {
@@ -94,9 +94,6 @@ export default function ResetPassword() {
                 </div>
 
                 <button class="button is-link is-rounded">Submit</button>
-                <p>
-                  <Link to="/forgot">Recuperar contraseña</Link>
-                </p>
               </form>
               <p className="new-account">
                 ¿No tienes cuenta? <br />

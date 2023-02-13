@@ -8,7 +8,8 @@ import makeAnimated, { Input } from "react-select/animated";
 import "bulma/css/bulma.min.css";
 import "./FormProperty.css";
 import uploadIcon from "../../assets/upload-icon.png";
-import { Link } from "react-router-dom";
+import tipiCreatePlace from "../../assets/tipiCreatePlace.png";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 // Google Maps
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 import PlacesAutocomplete from "react-places-autocomplete";
@@ -17,10 +18,13 @@ import {
   geocodeByPlaceId,
   getLatLng,
 } from "react-places-autocomplete";
+import Swal from "sweetalert2";
 
 import validateForm from "./validate.js";
 
 // Fin Google Maps
+
+import useAuth from "../Acceso/hooks/useAuth";
 
 const animatedComponents = makeAnimated();
 
@@ -34,6 +38,9 @@ const options = [
 ];
 
 export default function FormHostCreate() {
+  const { auth } = useAuth();
+  console.log(auth.idTenant);
+
   // Google Maps
   const libraries = ["places"];
   const { isLoaded } = useLoadScript({
@@ -46,6 +53,10 @@ export default function FormHostCreate() {
     lat: null,
     lng: null,
   });
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const handleSelect = async (value) => {
     setAddress(value);
@@ -92,6 +103,11 @@ export default function FormHostCreate() {
     rating: 1,
     lat: 0,
     lng: 0,
+    country: "",
+    state: "",
+    region: "",
+    city: "",
+    id_tenant: auth.idTenant,
   });
   // estados relacionados con inputs.images para mostrar lo subido
   const [urlImages, setUrlImages] = useState([]);
@@ -101,14 +117,16 @@ export default function FormHostCreate() {
   const errorsLength = Object.entries(errors).length;
 
   useEffect(() => {
-    // seteo el array si no hay images, sino creo el array a mostar
+    // seteo el array si no hay images, sino creo el array a mostrar
     if (inputs.image.length === 0) setUrlImages([]);
     if (inputs.image.length > 0) {
       const newArrayUrl = [];
       inputs.image.forEach((img) => newArrayUrl.push(URL.createObjectURL(img)));
       setUrlImages(newArrayUrl);
     }
-  }, [inputs.image]);
+
+    setErrors(validateForm(inputs));
+  }, [inputs]);
 
   const handleChange = (e, actionMeta = false) => {
     // Select no tiene name en el evento, usa ActionMeta
@@ -139,7 +157,7 @@ export default function FormHostCreate() {
       // console.log(Array.isArray(e.target.files));
       setInputs({
         ...inputs,
-        [e.target.name]: [...e.target.files],
+        [e.target.name]: [...inputs.image, ...e.target.files],
       });
     } else {
       setInputs({
@@ -160,8 +178,23 @@ export default function FormHostCreate() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!inputs.title) {
-      alert(" :( Algo salió mal, intenta de nuevo");
+    if (
+      !inputs.title ||
+      !inputs.checkIn ||
+      !inputs.checkOut ||
+      !inputs.capacity ||
+      !inputs.beds ||
+      !inputs.baths ||
+      inputs.services.length < 1 ||
+      !inputs.price
+    ) {
+      Swal.fire({
+        title: "Error al publicar Place",
+        text: "Algo salió mal, intenta de nuevo.",
+        icon: "error",
+        confirmButtonText: "Entendido",
+        timer: 4000,
+      });
     } else {
       setErrors(
         validateForm({
@@ -170,14 +203,34 @@ export default function FormHostCreate() {
         })
       );
       axios
-        .postForm("https://looking.fly.dev/property", inputs)
+        .postForm("https://food-app.fly.dev/property", inputs, {
+          "Content-Type": "multipart/form-data",
+        })
         .then(function (response) {
           console.log(response);
-          alert("Place publicado con éxito");
+          Swal.fire({
+            title: "Place publicado con éxito",
+            text: "Ahora tu Place aparece en la portada.",
+            imageUrl: tipiCreatePlace,
+            imageWidth: 200,
+            imageHeight: 180,
+            confirmButtonText: "Entendido",
+            timer: 4000,
+          });
+          setTimeout(() => {
+            navigate(from, { replace: true });
+            window.location.reload();
+          }, 4000);
         })
         .catch(function (error) {
           console.log(error);
-          alert(":( Algo salió mal, intenta de nuevo");
+          Swal.fire({
+            title: "Error fatal",
+            text: "Algo salió mal, intenta de nuevo.",
+            icon: "error",
+            confirmButtonText: "Entendido",
+            timer: 4000,
+          });
         });
     }
   };

@@ -5,9 +5,17 @@ import { es } from "react-date-range/dist/locale";
 import { DateRange } from "react-date-range";
 import { addDays, subDays } from "date-fns";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-export default function Calendar({ propId, bookings, price }) {
+export default function Calendar({
+  propId,
+  bookings,
+  price,
+  title,
+  description,
+}) {
   //  const dateDiary = useSelector -----> va al store
+  const navigate = useNavigate();
 
   const [state, setState] = useState({
     selection1: {
@@ -35,7 +43,7 @@ export default function Calendar({ propId, bookings, price }) {
     );
     console.log(dataBooking);
     const bookingProperty = await axios.patch(
-      "https://looking.fly.dev/property/update/bookings",
+      "https://food-app.fly.dev/property/update/bookings",
       { id: propId, bookings: dataBooking }
     );
     console.log(bookingProperty);
@@ -45,6 +53,14 @@ export default function Calendar({ propId, bookings, price }) {
       endDate: state.selection1.endDate,
       key: "selection_selected",
     });
+
+    const nochesNum =
+      state.selection1.endDate.getDate() - state.selection1.startDate.getDate();
+    const total = nochesNum * price;
+
+    navigate(
+      `/resumePay?title=${title}&description=${description}&price=${price}&nigths=${nochesNum}&total=${total}`
+    );
   }
 
   function reset() {
@@ -62,8 +78,6 @@ export default function Calendar({ propId, bookings, price }) {
       endDate: addDays(new Date(), 0),
       key: "selection_selected",
     });
-
-    setNoches(0);
   }
 
   const getDatesInRange = (checkIn, checkOut) => {
@@ -98,18 +112,12 @@ export default function Calendar({ propId, bookings, price }) {
   //   console.log("arr3:", arr3);
   // console.log("arr3:", arr3)
 
-  const [noches, setNoches] = useState(0);
   function itemSelection(item) {
     setState({
       ...state,
       ...item,
     });
 
-    setNoches(
-      getDatesInRange(state.selection1.startDate, state.selection1.endDate)
-        .length
-    );
-    console.log(noches);
     // console.log("item is:", item);
   }
 
@@ -129,41 +137,44 @@ export default function Calendar({ propId, bookings, price }) {
         />
       </div>
       <div>
-        <p className="subtitle has-text-centered">
-          Precio por noche : USD$:{price}
+        <p className="">
+          Precio por noche : <strong> USD$:{price}</strong>{" "}
         </p>
       </div>
       <div>
-        <p className="subtitle">Resumen de Reserva</p>
-        {noches === 0 ? (
-          <div>
-            <span>Noches a hospedarse : 0 </span>
-          </div>
-        ) : (
-          <div>
-            <span>Noches a hospedarse : {noches} </span>
-          </div>
-        )}
+        <p className="subTitleData">Resumen de la reserva</p>
 
-        <span>Precio total a pagar : USD$:{noches * price} </span>
+        <div>
+          <p>
+            Noches a hospedarse :
+            {state.selection1.endDate.getDate() -
+              state.selection1.startDate.getDate()}
+          </p>
+        </div>
+
+        <p>
+          Precio total a pagar : USD$:
+          {(state.selection1.endDate.getDate() -
+            state.selection1.startDate.getDate()) *
+            price}{" "}
+        </p>
       </div>
       <div
         style={{
           display: "flex",
           justifyContent: "center",
-          gap: "1rem",
+          gap: "2rem",
           margin: "20px 0",
         }}
       >
+        <button className="button is-large is-warning" onClick={reset}>
+          Reset
+        </button>
         <button
-          className="button is-primary is-outlined is-active"
+          className="button is-large is-primary is-outlined is-active"
           onClick={select}
         >
           Reservar
-        </button>
-
-        <button className="button is-warning" onClick={reset}>
-          Reset
         </button>
       </div>
     </div>

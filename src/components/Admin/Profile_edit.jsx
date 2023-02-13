@@ -1,6 +1,13 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { getUserById, updateClient } from "./Api";
+import {
+  getTenantById,
+  getUserById,
+  updateAvatar,
+  updateAvatarTenant,
+  updateClient,
+  updateTenant,
+} from "./Api";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 
@@ -8,6 +15,7 @@ export const Profile_edit = () => {
   //  Form edit values user edit profile, avatar, name, lastname, email, password, description, hobbies
   const animatedComponents = makeAnimated();
   const [avatarupload, setAvatarUpload] = useState("");
+  const [store, setStore] = useState([]);
   const [idUser, setIdUser] = useState(0);
   const [users, setUsers] = useState([]);
   const [form, setForm] = useState({
@@ -40,11 +48,17 @@ export const Profile_edit = () => {
     const fetchUsers = async () => {
       const storedAuth = JSON.parse(localStorage.getItem("auth") || "{}");
       const idClient = storedAuth?.idClient;
-
-      const users = await getUserById(idClient);
-
-      setUsers(users.data);
-      setIdUser(idClient);
+      const idTenant = storedAuth?.idTenant;
+      setStore(storedAuth);
+      if (storedAuth.role === "Client") {
+        const users = await getUserById(idClient);
+        setUsers(users.data);
+        setIdUser(idClient);
+      } else if (storedAuth.role === "Tenant" || storedAuth.role === "Admin") {
+        const users = await getTenantById(idTenant);
+        setUsers(users.data);
+        setIdUser(idTenant);
+      }
     };
     fetchUsers();
   }, []);
@@ -74,10 +88,7 @@ export const Profile_edit = () => {
     // Se convierte array a cadena json
     const hobbies = JSON.stringify(form.hobbies);
 
-    console.log(typeof hobbies);
-
     const newForm = {
-      avatar: form.avatar,
       fullName: form.fullName,
       phone: form.phone,
       from: form.from,
@@ -86,18 +97,29 @@ export const Profile_edit = () => {
       hobbies: hobbies,
     };
 
+    const images = {
+      image: form.avatar,
+    };
     // patch info axios send form
-    updateClient(idUser, newForm);
-    setForm({
-      ...form,
-      avatar: [],
-      fullName: "",
-      phone: "",
-      from: "",
-      age: "",
-      description: "",
-      hobbies: [],
-    });
+    if (store.role === "Client") {
+      updateClient(idUser, newForm);
+      updateAvatar(idUser, images);
+    } else if (store.role === "Tenant" || store.role === "Admin") {
+      updateTenant(idUser, newForm);
+      updateAvatarTenant(idUser, images);
+    } else {
+      alert("No se pudo actualizar el perfil");
+    }
+    // setForm({
+    //   ...form,
+    //   avatar: [],
+    //   fullName: "",
+    //   phone: "",
+    //   from: "",
+    //   age: "",
+    //   description: "",
+    //   hobbies: [],
+    // });
   };
 
   // if (form.hobbies.length > 5) {
@@ -202,7 +224,7 @@ export const Profile_edit = () => {
         </div>
         <div className="content-avatar-setting">
           <h2>Avatar Actual</h2>
-          <img src={users.avatar} alt="ActualAvatar" />
+          <img src={users?.avatar} alt="ActualAvatar" />
         </div>
       </div>
       <div className="form-group">

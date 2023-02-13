@@ -21,7 +21,7 @@ export default function Card(prod) {
         }}
         onClick={(e) => {
           axios
-            .post("https://looking.fly.dev/pago", pagoObj)
+            .post("https://food-app.fly.dev/pago", pagoObj)
             .then(
               (res) =>
                 (window.location.href = res.data.response.sandbox_init_point)
