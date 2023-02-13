@@ -1,5 +1,11 @@
+.container-global-filters {
+    height: auto;
+    
+}
+
 .container-filters-global{
     color: black;
+    
 }
 
 .container-search-button{
@@ -57,5 +63,8 @@
   .select-style{
     color: black;
   }
+.filters-buttons {
+    margin-top: 25px;
+}
 
   

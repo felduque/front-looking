@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import useScript from "./useScrip";
 
 export default function MPButton({ title, description, price }) {
   const dataPropClien = {
@@ -13,6 +14,11 @@ export default function MPButton({ title, description, price }) {
       email: "joel@hotmail.com",
     },
   };
+
+  const { MercadoPago } = useScript(
+    "https://sdk.mercadopago.com/js/v2",
+    "MercadoPago"
+  );
 
   useEffect(() => {
     // The async function is needed since we can't do async stuff in the top level of our useEffect
@@ -29,11 +35,11 @@ export default function MPButton({ title, description, price }) {
 
       // data.global is the ID that MP returns from the API, it comes from our backend route
       if (data) {
-        const script = document.createElement("script"); // Here we create the empty script tag
-        script.type = "text/javascript"; // The type of the script
-        script.src = "https://sdk.mercadopago.com/js/v2"; // The link where the script is hosted
-        script.setAttribute("data-preference-id", data.body.id); // Here we set its data-preference-id to the ID that the Mercado Pago API gives us
-        document.body.appendChild(script); // Here we append it to the body of our page
+        // const script = document.createElement("script"); // Here we create the empty script tag
+        // script.type = "text/javascript"; // The type of the script
+        // script.src = "https://sdk.mercadopago.com/js/v2"; // The link where the script is hosted
+        // script.setAttribute("data-preference-id", data.body.id); // Here we set its data-preference-id to the ID that the Mercado Pago API gives us
+        // document.body.appendChild(script); // Here we append it to the body of our page
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -64,10 +70,11 @@ export default function MPButton({ title, description, price }) {
       }
     };
 
-    setTimeout(() => {
-      fetchCheckout();
-    }, 0);
-  }, []);
+    fetchCheckout();
+    // setTimeout(() => {
+    //   fetchCheckout();
+    // }, 0);
+  }, [MercadoPago]);
 
   return <div className="cho-container"></div>;
 }

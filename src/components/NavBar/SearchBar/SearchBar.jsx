@@ -33,7 +33,7 @@ import Filters from "../../Filters/Filters";
 export default function SearchBar() {
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
-  const urlbase = "https://looking.fly.dev/properties";
+  const urlbase = "http://localhost:3000/properties";
 
   const handleClickSearchTitle = (e) => {
     e.preventDefault();
@@ -61,9 +61,6 @@ export default function SearchBar() {
               className="button is-info is-outlined is-small is-rounded display-button1"
             >
               <img src={searchIcon} className="search-button" />
-            </button>
-            <button className="button is-info is-outlined is-small is-rounded display-button">
-              {<Filters />}
             </button>
           </div>
         </form>

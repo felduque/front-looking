@@ -4,9 +4,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { getPropertiesAsync } from "../../redux/features/getPropertySlice";
 import Card from "../Card/Card";
 import "./Home.css";
-import Filters from "../Filters/Filters";
 import { useLoadScript } from "@react-google-maps/api";
 import { Pagination } from "../Pagination/Pagination";
+import Filters from "../Filters/Filters";
 
 function Home() {
   const { isLoaded } = useLoadScript({
@@ -39,61 +39,45 @@ function Home() {
 
   return (
     <div>
-      <div className="containerCards">
-        <div className="columns is-multiline box">
-          {statePropertys.result
-            ?.map((property, i) => {
-              return (
-                <div key={i}>
-                  <Card
-                    // className="card"
-                    key={property.id}
-                    id={property.id}
-                    price={property.price}
-                    image="https://picsum.photos/200/250"
-                    capacity={property.capacity}
-                    beds={property.beds}
-                    baths={property.baths}
-                    rating={property.rating}
-                    country={property.country}
-                    state={property.state}
-                    region={property.region}
-                  ></Card>
-                </div>
-              );
-            })
-            .slice(firstIndex, lastIndex)}
+      <div className="container-filter-home-card">
+        <div className="filters-left">
+          <Filters />
         </div>
-        <Pagination
-          propertyPerPage={propertyPerPage}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalProperty={totalProperty}
-        />
+        <div className="containerCards">
+          <div className="columns is-multiline box">
+            {statePropertys.result
+              ?.map((property, i) => {
+                return (
+                  <div key={i}>
+                    <Card
+                      // className="card"
+                      key={property.id}
+                      id={property.id}
+                      price={property.price}
+                      image={property.image}
+                      capacity={property.capacity}
+                      beds={property.beds}
+                      baths={property.baths}
+                      rating={property.rating}
+                      country={property.country}
+                      state={property.state}
+                      region={property.region}
+                    ></Card>
+                  </div>
+                );
+              })
+              .slice(firstIndex, lastIndex)}
+          </div>
+          <Pagination
+            propertyPerPage={propertyPerPage}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalProperty={totalProperty}
+          />
+        </div>
       </div>
     </div>
   );
 }
 
 export default Home;
-
-{
-  /*
-  
-  const { data: cards, error } = useGetCardsQuery();
-  <NavBar className="w-3" />
-      <div className="md:flex gap-4 shrink-0">
-        {cards?.length
-          ? cards.map((card) => (
-              <ul key={card.id}>
-                <Card
-                  title={card.title}
-                  image={card.image}
-                  capacity={card.capacity}
-                  rating={card.rating}
-                />
-              </ul>
-            ))
-          : console.log(error)}
-      </div>*/
-}

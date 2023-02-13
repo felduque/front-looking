@@ -14,8 +14,20 @@
 
 .containerCards {
   margin-left: 30px;
+  position: relative;
+  left: 17%;
+  width: 78%;
+}
+.filters-left {
+  width: 250px;
+  height: 500px;
+  position: fixed;
+  padding: 20px 10px;
 }
 
+.container-filter-home-card {
+  position: relative;
+}
 /*CUANDO PONGAN LOS FILTROS ARRIBA, 
 DESDE ACÁ SE EDITA PARA RECORRER EL CONTENIDO CENTRAL DE HOME CENTRAL*/
 /*.containerCards {
