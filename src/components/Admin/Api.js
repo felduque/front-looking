@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "https://food-app.fly.dev";
+const url = "https://looking.fly.dev/";
 
 export function getAllUsers() {
   try {
@@ -14,7 +14,7 @@ export function getAllUsers() {
 export function updateClient(id, data) {
   try {
     const result = axios.patch(
-      `https://food-app.fly.dev/client/updateuser/${id}`,
+      `https://looking.fly.dev/client/updateuser/${id}`,
       data
     );
     return result;
@@ -25,7 +25,7 @@ export function updateClient(id, data) {
 
 export function allPropierties() {
   try {
-    const result = axios.get("https://food-app.fly.dev/properties");
+    const result = axios.get("https://looking.fly.dev/properties");
     return result;
   } catch (error) {
     console.log(error);
@@ -35,7 +35,7 @@ export function allPropierties() {
 export function updateAvatar(id, data) {
   try {
     const result = axios.patch(
-      `https://food-app.fly.dev/client/updateavatar/${id}`,
+      `https://looking.fly.dev/client/updateavatar/${id}`,
       data,
       {
         headers: {
@@ -51,7 +51,7 @@ export function updateAvatar(id, data) {
 
 export function getAllTenants() {
   try {
-    const result = axios.get("https://food-app.fly.dev/tenant/gettenant");
+    const result = axios.get("https://looking.fly.dev/tenant/gettenant");
     return result;
   } catch (error) {
     console.log(error);
@@ -60,7 +60,7 @@ export function getAllTenants() {
 
 export function getUserById(id) {
   try {
-    const result = axios.get(`https://food-app.fly.dev/client/getuser/${id}`);
+    const result = axios.get(`https://looking.fly.dev/client/getuser/${id}`);
     return result;
   } catch (error) {
     console.log(error);
@@ -69,7 +69,7 @@ export function getUserById(id) {
 
 export function getTenantById(id) {
   try {
-    const result = axios.get(`https://food-app.fly.dev/tenant/gettenant/${id}`);
+    const result = axios.get(`https://looking.fly.dev/tenant/gettenant/${id}`);
     return result;
   } catch (error) {
     console.log(error);
@@ -79,7 +79,7 @@ export function getTenantById(id) {
 export function updateTenant(id, data) {
   try {
     const result = axios.patch(
-      `https://food-app.fly.dev/tenant/updatetenant/${id}`,
+      `https://looking.fly.dev/tenant/updatetenant/${id}`,
       data
     );
     return result;
@@ -91,7 +91,7 @@ export function updateTenant(id, data) {
 export function updateAvatarTenant(id, data) {
   try {
     const result = axios.patch(
-      `https://food-app.fly.dev/tenant/updateavatar/${id}`,
+      `https://looking.fly.dev/tenant/updateavatar/${id}`,
       data,
       {
         headers: {

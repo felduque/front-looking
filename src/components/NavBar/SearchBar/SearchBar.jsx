@@ -33,7 +33,7 @@ import Filters from "../../Filters/Filters";
 export default function SearchBar() {
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
-  const urlbase = "https://food-app.fly.dev/properties";
+  const urlbase = "https://looking.fly.dev/properties";
 
   const handleClickSearchTitle = (e) => {
     e.preventDefault();

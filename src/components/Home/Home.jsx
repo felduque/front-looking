@@ -14,7 +14,7 @@ function Home() {
     libraries: ["places"],
   });
 
-  const url = "https://food-app.fly.dev/properties";
+  const url = "https://looking.fly.dev/properties";
   const dispatch = useDispatch();
 
   useEffect(() => {

@@ -45,7 +45,7 @@ const optionsCapacity = [
 ];
 
 export default function Filters() {
-  const urlbase = "https://food-app.fly.dev/properties";
+  const urlbase = "https://looking.fly.dev/properties";
 
   const dispatch = useDispatch();
 

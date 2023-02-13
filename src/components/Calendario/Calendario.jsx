@@ -43,7 +43,7 @@ export default function Calendar({
     );
     console.log(dataBooking);
     const bookingProperty = await axios.patch(
-      "https://food-app.fly.dev/property/update/bookings",
+      "https://looking.fly.dev/property/update/bookings",
       { id: propId, bookings: dataBooking }
     );
     console.log(bookingProperty);

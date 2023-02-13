@@ -203,7 +203,7 @@ export default function FormHostCreate() {
         })
       );
       axios
-        .postForm("https://food-app.fly.dev/property", inputs, {
+        .postForm("https://looking.fly.dev/property", inputs, {
           "Content-Type": "multipart/form-data",
         })
         .then(function (response) {

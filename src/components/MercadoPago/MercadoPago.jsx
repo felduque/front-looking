@@ -17,16 +17,13 @@ export default function MPButton({ title, description, price }) {
   useEffect(() => {
     // The async function is needed since we can't do async stuff in the top level of our useEffect
     const fetchCheckout = async () => {
-      const res = await fetch(
-        "https://food-app.fly.dev/checkOut/pagoProperty",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(dataPropClien),
-        }
-      );
+      const res = await fetch("https://looking.fly.dev/checkOut/pagoProperty", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataPropClien),
+      });
       const data = await res.json();
       console.log(data.body.id);
 

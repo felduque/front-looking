@@ -114,17 +114,14 @@ export default function SignUp() {
   async function createUser(dataUser) {
     if (typeAccount === "Client") {
       try {
-        await axios.post(
-          "https://food-app.fly.dev/client/createuser",
-          dataUser
-        );
+        await axios.post("https://looking.fly.dev/client/createuser", dataUser);
       } catch (err) {
         console.error(err, "Error create new user");
       }
     } else if (typeAccount === "Tenant") {
       try {
         await axios.post(
-          "https://food-app.fly.dev/tenant/createtenant",
+          "https://looking.fly.dev/tenant/createtenant",
           dataUser
         );
       } catch (err) {
