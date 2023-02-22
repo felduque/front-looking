@@ -5,6 +5,7 @@ import "./LandingPage.css";
 import "./PricingTable.css";
 import "./Reviews.css";
 import logoLookingPlace from "../../assets/logo-icon.png";
+import { Link } from "react-router-dom";
 import video from "../../assets/landingpage.mp4";
 import { getPropertiesAsync } from "../../redux/features/getPropertySlice";
 
@@ -147,11 +148,11 @@ export default function LandingPage() {
               </button>
             </div>
           </div>
-          <a href="/home">
+          <Link to="/home">
             <button class="button is-link is-focused  is-medium into-home-button">
               Entrar al sitio
             </button>
-          </a>
+          </Link>
         </div>
 
         <div>
