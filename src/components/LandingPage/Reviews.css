@@ -1,0 +1,156 @@
+blockquote {
+	color: #ffffff;
+}
+
+/* Utility Classes */
+.container {
+	max-width: 1300px;
+	margin: 0 auto;
+	padding: 0 30px;
+}
+
+.small {
+	font-size: 14px;
+}
+
+/* Grid */
+#grid {
+	padding: 80px 0;
+}
+
+#grid .container {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 20px;
+}
+
+/* Grid Box */
+.grid-box {
+	padding: 30px;
+	border-radius: 20px;
+}
+
+.grid-box-author {
+	display: flex;
+	align-items: center;
+}
+
+.grid-box-author img {
+	border-radius: 50%;
+	height: 50px;
+	margin-right: 10px;
+}
+
+.grid-box-author-title p:first-child {
+	font-weight: 500;
+	color: #fff;
+}
+
+.grid-box-author-title p:nth-child(2) {
+	color: #ffffff;
+}
+
+.grid-box h4 {
+	color: #fff;
+	padding: 15px 0;
+}
+
+.grid-box-purple {
+	background: #7541c8;
+	background-image: url('/images/bg-pattern-quotation.svg');
+	background-repeat: no-repeat;
+	background-position: top right 50px;
+}
+.grid-box-gray {
+	background: #48556a;
+}
+.grid-box-navy {
+	background: #19212e;
+}
+.grid-box-white {
+	background: #ffffff;
+}
+
+.grid-box-white p:first-child {
+	color: #ffffff;
+}
+
+.grid-box-white h4 {
+  /*Color texto cabezeras tajetas laterales*/
+	color: #ffffff;
+}
+
+.grid-box-white p:nth-child(2),
+.grid-box-white blockquote {
+   /*Color texto tajetas laterales*/
+	color: #ffffff;
+	/*opacity: 60%; */
+}
+
+.grid-box-daniel {
+	grid-row: 1;
+	grid-column: 1/3;
+  background-color: rgb(212, 114, 86);
+}
+.grid-box-jonathan {
+	grid-row: 1;
+	grid-column: 3/4;
+  background-color: rgb(163, 102, 169);
+}
+.grid-box-kira {
+	grid-row: 1/3;
+	grid-column: 4/5;
+  background-color: rgb(206, 136, 167);
+}
+.grid-box-jeanette {
+	grid-row: 2/3;
+	grid-column: 1/2;
+  background-color: rgb(120, 141, 183);
+
+}
+.grid-box-patrick {
+	grid-row: 2/3;
+	grid-column: 2/4;
+  background-color: rgb(90, 167, 143);
+}
+
+/* Attribution */
+.attribution {
+	padding-bottom: 30px;
+	text-align: center;
+}
+
+.attribution a {
+	color: #ffffff;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+	#grid .container {
+		grid-template-columns: 1fr;
+	}
+
+	.grid-box-daniel,
+	.grid-box-jonathan,
+	.grid-box-kira,
+	.grid-box-jeanette,
+	.grid-box-patrick {
+		grid-column: 1;
+	}
+
+	.grid-box-daniel {
+		grid-row: 1;
+	}
+	.grid-box-jonathan {
+		grid-row: 2;
+	}
+	.grid-box-kira {
+		grid-row: 3;
+	}
+	.grid-box-jeanette {
+		grid-row: 4;
+	}
+	.grid-box-patrick {
+		grid-row: 5;
+	}
+}

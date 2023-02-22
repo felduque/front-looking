@@ -1,17 +1,34 @@
 import { useEffect } from "react";
 import useScript from "./useScrip";
 
-export default function MPButton({ title, description, price }) {
+export default function MPButton({
+  id,
+  title,
+  description,
+  price,
+  picture_url,
+}) {
+  const auth = JSON.parse(localStorage.getItem("auth"));
+  // console.log(JSON.parse(auth));
+  console.log(auth);
+  const idClient = auth.idClient;
+  const emailClient = auth.email;
+
+  console.log(id, title, description, price, picture_url);
+
   const dataPropClien = {
     property: {
+      id: id,
       title: title,
       description: description,
       price: price,
+      picture_url: picture_url,
     },
     client: {
-      name: "Joe",
-      surname: "JG",
-      email: "joel@hotmail.com",
+      id: idClient,
+      // name: "Felipe",
+      // surname: "Felipe",
+      email: emailClient,
     },
   };
 
@@ -47,7 +64,10 @@ export default function MPButton({ title, description, price }) {
         // Here we create the button, setting the container, our public key and the ID of the preference that Mercado Pago API returns in its response
 
         const mp = await new MercadoPago(
-          "TEST-137b6be0-b064-4d95-98b8-077723d4ebb1",
+          // CRED DE PUEBA CON CUENTA NORMAL
+          // "TEST-137b6be0-b064-4d95-98b8-077723d4ebb1",
+          // CRED DE PROD CON USUARIO DE PRUEBA
+          "APP_USR-41cc642e-f6ee-41eb-a48c-adce822c53eb",
           {
             locale: "es-PE",
           }

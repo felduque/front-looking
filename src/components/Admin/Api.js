@@ -76,6 +76,24 @@ export function getTenantById(id) {
   }
 }
 
+export function getClientById(id) {
+  try {
+    const result = axios.get(`https://looking.fly.dev/client/getuser/${id}`);
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function getPropertyById(id) {
+  try {
+    const result = axios.get(`https://looking.fly.dev/property/${id}`);
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export function updateTenant(id, data) {
   try {
     const result = axios.patch(
@@ -99,6 +117,69 @@ export function updateAvatarTenant(id, data) {
         },
       }
     );
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function deleteClient(id) {
+  try {
+    const result = axios.delete(
+      `https://looking.fly.dev/client/deleteuser/${id}`
+    );
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function deleteProperty(id) {
+  try {
+    const result = axios.delete(
+      `https://looking.fly.dev/property/delete/${id}`
+    );
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function deleteTenant(id) {
+  try {
+    const result = axios.delete(
+      `https://looking.fly.dev/tenant/deletetenant/${id}`
+    );
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function getPropertyByid(id) {
+  try {
+    const result = axios.get(`https://looking.fly.dev/property/${id}`);
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function updatePropery(id, data) {
+  try {
+    const result = axios.patch(
+      `https://looking.fly.dev/property/edit/${id}`,
+      data
+    );
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function deleteComment(id) {
+  try {
+    const result = axios.delete(`https://looking.fly.dev/comment/delete/${id}`);
     return result;
   } catch (error) {
     console.log(error);

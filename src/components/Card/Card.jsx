@@ -25,30 +25,15 @@ function Card({
   image?.forEach((e) => slides.push({ url: e }));
   console.log(slides);
   // const slides = [
-  //   {
-  //     url: "https://images.pexels.com/photos/2102587/pexels-photo-2102587.jpeg",
-  //     title: "Beach",
-  //   },
-  //   {
-  //     url: "https://images.pexels.com/photos/8317058/pexels-photo-8317058.jpeg",
-  //     title: "Boat",
-  //   },
-  //   {
-  //     url: "https://images.pexels.com/photos/8317006/pexels-photo-8317006.jpeg",
-  //     title: "Forest",
-  //   },
-  //   {
-  //     url: "https://images.pexels.com/photos/3635805/pexels-photo-3635805.jpeg",
-  //     title: "City",
-  //   },
-  //   {
-  //     url: "https://images.pexels.com/photos/1560065/pexels-photo-1560065.jpeg",
-  //     title: "Venecia",
-  //   },
+  //   { url: "https://images.pexels.com/photos/2102587/pexels-photo-2102587.jpeg", title: "Beach" },
+  //   { url: "https://images.pexels.com/photos/8317058/pexels-photo-8317058.jpeg", title: "Boat" },
+  //   { url: "https://images.pexels.com/photos/8317006/pexels-photo-8317006.jpeg", title: "Forest" },
+  //   { url: "https://images.pexels.com/photos/3635805/pexels-photo-3635805.jpeg", title: "City" },
+  //   { url: "https://images.pexels.com/photos/1560065/pexels-photo-1560065.jpeg", title: "Venecia" },
   // ];
 
   const containerStyles = {
-    width: "300px",
+    width: "280px",
     height: "250px",
     margin: "0 auto",
     zIndex: 10,
@@ -72,28 +57,28 @@ function Card({
                   <img src={starIcon} className="icon-star" />
                 </div>
                 <div className="column">
-                  <span>{rating}/5</span>
+                  <span className="number-card">{rating}/5</span>
                 </div>
 
                 <div className="column">
                   <img src={capacityIcon} className="icon-capacity" />
                 </div>
                 <div className="column">
-                  <span>{capacity}</span>
+                  <span className="number-card">{capacity}</span>
                 </div>
 
                 <div className="column">
                   <img src={bedsIcon} className="icon-beds" />
                 </div>
                 <div className="column">
-                  <span>{beds}</span>
+                  <span className="number-card">{beds}</span>
                 </div>
 
                 <div className="column">
                   <img src={bathroomIcon} className="icon-bathroom" />
                 </div>
-                <div className="column">
-                  <span>{baths}</span>
+                <div className="column ">
+                  <span className="number-card">{baths}</span>
                 </div>
               </div>
             </div>

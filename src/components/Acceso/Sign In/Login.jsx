@@ -4,19 +4,18 @@ import useAuth from "../hooks/useAuth";
 import axios from "axios";
 import usermailIcon from "../../../assets/usermail-login.png";
 import userPasswordIcon from "../../../assets/key-login.png";
-import leftarrow from "../../../assets/flecha-izquierda.png";
+
 import "./Login.css";
-// import LoginGoogle from "./LoginGoogle";
-import Swal from "sweetalert2";
+import LoginGoogle from "./LoginGoogle";
 
 //const LOGIN_URL = "/client/login";
 
-export default function Login() {
+export default function Login({ closeModal }) {
   const { auth, setAuth } = useAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from?.pathname || "/home";
   const [setType, setSetType] = useState({
     client: false,
     tenant: false,
@@ -62,7 +61,10 @@ export default function Login() {
           `https://looking.fly.dev/client/login`,
           JSON.stringify({ email: email, password: password }),
           {
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
             withCredentials: true,
           }
         );
@@ -71,14 +73,24 @@ export default function Login() {
         const accessToken = response?.data?.accessToken;
         const idClient = response?.data?.userId;
         const role = response?.data?.role;
+        const fullName = response?.data?.fullName;
+        const avatar = response?.data?.avatar;
         //const role = roleMapping[email] || "default";
 
-        setAuth({ email, password, accessToken, role });
+        setAuth({ email, password, accessToken, role, avatar, fullName });
         console.log(email, password, accessToken);
         localStorage.setItem(
           "auth",
-          JSON.stringify({ email, password, idClient, accessToken, role })
+          JSON.stringify({
+            email,
+            idClient,
+            accessToken,
+            role,
+            avatar,
+            fullName,
+          })
         );
+        window.localStorage.setItem("loggedClient", true);
         setEmail("");
         setPassword("");
         //setRole("");
@@ -112,14 +124,75 @@ export default function Login() {
         const accessToken = response?.data?.accessToken;
         const idTenant = response?.data?.userId;
         const role = response?.data?.role;
+        const fullName = response?.data?.fullName;
+        const avatar = response?.data?.avatar;
         //const role = roleMapping[email] || "default";
 
-        setAuth({ email, password, accessToken, role });
+        setAuth({ email, password, accessToken, role, avatar, fullName });
         console.log(email, password, accessToken);
         localStorage.setItem(
           "auth",
-          JSON.stringify({ email, password, idTenant, accessToken, role })
+          JSON.stringify({
+            email,
+            idTenant,
+            accessToken,
+            role,
+            avatar,
+            fullName,
+          })
         );
+        window.localStorage.setItem("loggedTenant", true);
+        setEmail("");
+        setPassword("");
+        //setRole("");
+        navigate(from, { replace: true });
+        window.location.reload();
+      } catch (err) {
+        if (!err?.response) {
+          setErrMsg("Sin respuesta del servidor(back)");
+        } else if (err.response?.status === 400) {
+          setErrMsg("Creo que escribiste mal la contraseña");
+        } else if (err.response?.status === 401) {
+          setErrMsg(
+            "No estás registrado, no vas a poder entrar sin registrarte :)"
+          );
+        } else {
+          setErrMsg("Error al ingresar");
+        }
+      }
+    } else if (auth.role === "Admin") {
+      try {
+        const response = await axios.post(
+          `https://looking.fly.dev/tenant/login`,
+          JSON.stringify({ email: email, password: password }),
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }
+        );
+        console.log(response);
+        //console.log(JSON.stringify(response));
+        const accessToken = response?.data?.accessToken;
+        const idClient = response?.data?.userId;
+        const role = response?.data?.role;
+        const fullName = response?.data?.fullName;
+        const avatar = response?.data?.avatar;
+        //const role = roleMapping[email] || "default";
+
+        setAuth({ email, password, accessToken, role, avatar, fullName });
+        console.log(email, password, accessToken);
+        localStorage.setItem(
+          "auth",
+          JSON.stringify({
+            email,
+            idClient,
+            accessToken,
+            role,
+            avatar,
+            fullName,
+          })
+        );
+        window.localStorage.setItem("loggedAdmin", true);
         setEmail("");
         setPassword("");
         //setRole("");
@@ -148,91 +221,141 @@ export default function Login() {
       });
     }
   };
-  function back() {
-    navigate(from, { replace: true });
-  }
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      closeModal();
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
-    <>
-      <div className="opacityimg">
-        <img src={leftarrow} alt="" className="btnBackLogin" onClick={back} />
-      </div>
-      <div className="container-page-login">
-        <div className="container-login">
-          <div className="form-container-login">
-            <section>
-              <div className="error-messg-server">{errMsg}</div>
-
-              <div className="title is-4 is-spaced">Ingresar a la aventura</div>
-              <form onSubmit={handleSubmit}>
-                <div className="field">
-                  <p className="control has-icons-left">
-                    <input
-                      type="email"
-                      id="emailname"
-                      className="input"
-                      placeholder="Correo"
-                      autoComplete="off"
-                      onChange={(e) => setEmail(e.target.value)}
-                      value={email}
-                      required
-                    />
-                    <span className="icon is-small is-left">
-                      <i className="fas fa-user">
-                        <img src={usermailIcon} className="icon-login" />
-                      </i>
-                    </span>
+    <div class="modal is-active">
+      <div class="modal-background" onClick={closeModal}></div>
+      <div class="modal-content">
+        <>
+          <div className="container-page-login">
+            <div className="form-container-login">
+              <section>
+                <div className="error-messg-server">{errMsg}</div>
+                <div className="title is-4 is-spaced">
+                  Ingresar a la aventura
+                </div>
+                <form onSubmit={handleSubmit}>
+                  <div className="field">
+                    <p className="control has-icons-left">
+                      <input
+                        type="email"
+                        id="emailname"
+                        className="input"
+                        placeholder="Correo"
+                        autoComplete="off"
+                        onChange={(e) => setEmail(e.target.value)}
+                        value={email}
+                        required
+                      />
+                      <span className="icon is-small is-left">
+                        <i className="fas fa-user">
+                          <img src={usermailIcon} className="icon-login" />
+                        </i>
+                      </span>
+                    </p>
+                  </div>
+                  <div className="field">
+                    <p className="control has-icons-left">
+                      <input
+                        type="password"
+                        id="passwordLogin"
+                        className="input"
+                        placeholder="Contraseña"
+                        autoComplete="off"
+                        onChange={(e) => setPassword(e.target.value)}
+                        value={password}
+                        required
+                      />
+                      <span className="icon is-small is-left">
+                        <i className="fas fa-user">
+                          <img src={userPasswordIcon} className="icon-login" />
+                        </i>
+                      </span>
+                    </p>
+                  </div>
+                  <div className="pt-2">
+                    <button
+                      name="client"
+                      type="button"
+                      className={
+                        setType.client === true
+                          ? "button is-link is-rounded"
+                          : "button is-link is-outlined has-tooltip-right is-rounded"
+                      }
+                      onClick={handleChangeType}
+                    >
+                      Soy Cliente
+                    </button>
+                    <button
+                      type="button"
+                      name="tenant"
+                      onClick={handleChangeType}
+                      className={
+                        setType.tenant === true
+                          ? "button is-link ml-4 is-rounded"
+                          : "button is-link is-outlined has-tooltip-right ml-4 is-rounded"
+                      }
+                    >
+                      Soy Arrendatario
+                    </button>
+                  </div>
+                  <div className="pt-2 pb-2">
+                    <button
+                      className="button is-link is-rounded"
+                      disabled={
+                        setType.client === false && setType.tenant === false
+                      }
+                    >
+                      Ingresar
+                    </button>
+                  </div>
+                  <p>
+                    <Link to="/forgotpassword" onClick={closeModal}>
+                      Recuperar contraseña
+                    </Link>
+                  </p>
+                </form>
+                <div className="pt-2">
+                  <p>
+                    <LoginGoogle />
                   </p>
                 </div>
-                <div className="field">
-                  <p className="control has-icons-left">
-                    <input
-                      type="password"
-                      id="passwordLogin"
-                      className="input"
-                      placeholder="Contraseña"
-                      autoComplete="off"
-                      onChange={(e) => setPassword(e.target.value)}
-                      value={password}
-                      required
-                    />
-                    <span className="icon is-small is-left">
-                      <i className="fas fa-user">
-                        <img src={userPasswordIcon} className="icon-login" />
-                      </i>
-                    </span>
-                  </p>
-                </div>
-                <button className="button is-link is-rounded">Ingresar</button>
-                <p>
-                  <Link to="/forgotpassword">Recuperar contraseña</Link>
+                <p className="new-account">
+                  ¿No tienes cuenta? <br />
+                  <span>
+                    <Link to="/register" onClick={closeModal}>
+                      Registrarme
+                    </Link>
+                  </span>
+                  <Link to="/home" className="btnBackHomeLogin">
+                    <button
+                      className="button is-link is-rounded"
+                      id="btnBackHomeLogin"
+                    >
+                      Home
+                    </button>
+                  </Link>
+                  {/* <LoginGoogle /> */}
                 </p>
-              </form>
-              <p className="new-account">
-                ¿No tienes cuenta? <br />
-                <span>
-                  <Link to="/register">Registrarme</Link>
-                </span>
-                {/* <LoginGoogle /> */}
-              </p>
-              <button
-                name="client"
-                onClick={handleChangeType}
-                className="button is-link is-rounded"
-              >
-                soy Cliente
-              </button>
-              <button
-                name="tenant"
-                onClick={handleChangeType}
-                className="button is-link is-rounded"
-              >
-                Soy Arrendatario
-              </button>
-            </section>
+              </section>
+            </div>
           </div>
-        </div>
+        </>
       </div>
-    </>
+      <button class="modal-close is-large" aria-label="close"></button>
+    </div>
   );
 }

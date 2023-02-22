@@ -10,7 +10,7 @@ export default function OwnCarousel({ images, id }) {
     if (images?.length > 0) {
       setCurrent(images[Number(index)]);
     }
-  }, [id]);
+  }, [id, images]);
 
   const handleNext = () => {
     if (Number(index) + 1 < total) {
@@ -42,14 +42,15 @@ export default function OwnCarousel({ images, id }) {
     <>
       <div>
         <div className="container-imgPrin">
-          <div className="btnNp" onClick={handlePrev}>
-            {"<"}
+          <div className="btnNp button is-info is-outlined" onClick={handlePrev}>
+          ❰
           </div>
           <img className="imgPrin" src={current} alt="" />
-          <div className="btnNp" onClick={handleNext}>
-            {">"}
+          <div className="btnNp button is-info is-outlined" onClick={handleNext}>
+          ❱
           </div>
         </div>
+        <hr className="c-hr"/>
         <div className="container-mini-cards">
           {images?.map((im, index) => {
             return (

@@ -1,5 +1,8 @@
 import React from "react";
 import "./Pagination.css";
+import Swal from "sweetalert2";
+import Loader from "../Loader/Loader";
+import { Link } from "react-router-dom";
 
 export const Pagination = ({
   propertyPerPage,
@@ -13,6 +16,11 @@ export const Pagination = ({
     pageNumber.push(i);
   }
 
+  const cleanProperties = (e) => {
+    e.preventDefault();
+    window.location.reload(false);
+  };
+
   const onPreviusPage = () => {
     setCurrentPage(currentPage - 1);
   };
@@ -23,6 +31,31 @@ export const Pagination = ({
   const onSpecificPage = (n) => {
     setCurrentPage(n);
   };
+
+  if (totalProperty === 0) {
+    return (
+      <div className="notification is-warning mt-6 pt-6">
+        <h1 className="pb-3">
+          No hay propiedades que mostrar. Al parecer NINGUNA propiedad tiene las
+          caracteristicas que elegiste en los filtros
+        </h1>
+        <Link
+          to="/home"
+          onClick={cleanProperties}
+          style={{ textDecoration: "none" }}
+        >
+          <button className="button is-link">
+            Volver a la lista de propiedades
+          </button>
+        </Link>
+      </div>
+    );
+    // } else if (!totalProperty) {
+    //   return (
+    //     <Loader />
+    //   )
+    // }
+  }
 
   return (
     <div>
@@ -57,9 +90,7 @@ export const Pagination = ({
           Siguiente
         </button>
         <ul className="pagination-list">
-          <li>
-            {/* <span class="pagination-ellipsis">&hellip;</span> */}
-          </li>
+          <li>{/* <span class="pagination-ellipsis">&hellip;</span> */}</li>
           {pageNumber.map((noPage) => {
             return noPage < currentPage - 2 ||
               noPage > currentPage + 2 ? null : (
@@ -75,9 +106,7 @@ export const Pagination = ({
               </li>
             );
           })}
-          <li>
-            {/* <span class="pagination-ellipsis">&hellip;</span> */}
-          </li>
+          <li>{/* <span class="pagination-ellipsis">&hellip;</span> */}</li>
         </ul>
       </nav>
     </div>

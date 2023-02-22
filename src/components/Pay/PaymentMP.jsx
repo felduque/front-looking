@@ -13,12 +13,7 @@ export default function Card(prod) {
   return (
     <div>
       <button
-        style={{
-          color: "white",
-          backgroundColor: "#F6AB0B",
-          padding: "10px",
-          borderRadius: "20px",
-        }}
+        className="btn is-active "
         onClick={(e) => {
           axios
             .post("https://looking.fly.dev/pago", pagoObj)
@@ -28,7 +23,8 @@ export default function Card(prod) {
             );
         }}
       >
-        Quiero Plan PRO
+        <i class="bi bi-bag "></i>
+        <strong>Obtener ahora</strong>
       </button>
     </div>
   );

@@ -5,15 +5,30 @@ import usermailIcon from "../../../assets/usermail-login.png";
 import leftarrow from "../../../assets/flecha-izquierda.png";
 import "./Login.css";
 import axios from "../hooks/axios";
+import useAuth from "../hooks/useAuth";
 
 export default function ForgotPassword() {
+  const { auth, setAuth } = useAuth();
   const [email, setEmail] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from?.pathname || "/home";
+  const [setType, setSetType] = useState({
+    client: false,
+    tenant: false,
+  });
+
+  const handleChangeType = (e) => {
+    const { name } = e.target;
+    setSetType({
+      client: false,
+      tenant: false,
+      [name]: true,
+    });
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -23,15 +38,38 @@ export default function ForgotPassword() {
       return;
     }
 
-    try {
-      const response = await axios.post("/client/forgot", { email });
-      setSuccessMessage(
-        "Un correo con las instrucciones para recuperar su contraseña ha sido enviado a su buzón. Si no lo encuentra revise en la carpeta spam."
-      );
-    } catch (error) {
-      setErrorMessage(
-        "Hubo un problema al enviar el correo electrónico de recuperación de contraseña, intentalo más tarde"
-      );
+    if (setType.client === true) {
+      try {
+        const response = await axios.post("/client/forgot", { email });
+        setSuccessMessage(
+          "Un correo con las instrucciones para recuperar su contraseña ha sido enviado a su buzón. Si no lo encuentra revise en la carpeta spam."
+        );
+      } catch (error) {
+        setErrorMessage(
+          "Hubo un problema al enviar el correo electrónico de recuperación de contraseña, intentalo más tarde"
+        );
+        if (error.response.status === 400) {
+          setErrorMessage(
+            "Email no registrado, usa un email que pertenezca a un cliente."
+          );
+        }
+      }
+    } else if (setType.tenant === true) {
+      try {
+        const response = await axios.post("/tenant/forgot", { email });
+        setSuccessMessage(
+          "Un correo con las instrucciones para recuperar su contraseña ha sido enviado a su buzón. Si no lo encuentra revise en la carpeta spam."
+        );
+      } catch (error) {
+        setErrorMessage(
+          "Hubo un problema al enviar el correo electrónico de recuperación de contraseña, intentalo más tarde."
+        );
+        if (error.response.status === 400) {
+          setErrorMessage(
+            "Email no registrado, usa un email que pertenezca a un arrendatario."
+          );
+        }
+      }
     }
 
     // acá debería enviar una solicitud a la API para enviar el correo electrónico de recuperación de contraseña
@@ -74,7 +112,14 @@ export default function ForgotPassword() {
                   </p>
                 </div>
 
-                <button class="button is-link is-rounded">Enviar</button>
+                <button
+                  class="button is-link is-rounded"
+                  disabled={
+                    setType.client === false && setType.tenant === false
+                  }
+                >
+                  Enviar
+                </button>
               </form>
               <p className="new-account">
                 <span>
@@ -83,6 +128,30 @@ export default function ForgotPassword() {
                   <Link to="/register">Registrate</Link>
                 </span>
               </p>
+              <div className="pt-3 pb-3">
+                <button
+                  name="client"
+                  className={
+                    setType.client === true
+                      ? "button is-link is-rounded"
+                      : "button is-link is-outlined has-tooltip-right is-rounded"
+                  }
+                  onClick={handleChangeType}
+                >
+                  Soy Cliente
+                </button>
+                <button
+                  name="tenant"
+                  onClick={handleChangeType}
+                  className={
+                    setType.tenant === true
+                      ? "button is-link ml-4 is-rounded"
+                      : "button is-link is-outlined has-tooltip-right ml-4 is-rounded"
+                  }
+                >
+                  Soy Arrendatario
+                </button>
+              </div>
             </section>
           </div>
         </div>

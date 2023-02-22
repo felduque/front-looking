@@ -6,6 +6,7 @@ import { DateRange } from "react-date-range";
 import { addDays, subDays } from "date-fns";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export default function Calendar({
   propId,
@@ -13,8 +14,14 @@ export default function Calendar({
   price,
   title,
   description,
+  url,
 }) {
   //  const dateDiary = useSelector -----> va al store
+
+  const auth = JSON.parse(localStorage.getItem("auth"));
+  //console.log(auth);
+  // console.log(auth.role);
+
   const navigate = useNavigate();
 
   const [state, setState] = useState({
@@ -42,11 +49,13 @@ export default function Calendar({
       state.selection1.endDate
     );
     console.log(dataBooking);
-    const bookingProperty = await axios.patch(
-      "https://looking.fly.dev/property/update/bookings",
-      { id: propId, bookings: dataBooking }
-    );
-    console.log(bookingProperty);
+    // RESTRINGIENDO FECHAS DE CALENDARIO, SE REALIZARA UNA VEZ REALIZADO EL PAGO
+    // const bookingProperty = await axios.patch(
+    //   "https://looking.fly.dev/property/update/bookings",
+    //   { id: propId, bookings: dataBooking }
+    // );
+    // console.log(bookingProperty);
+    // RESTRINGIENDO FECHAS DE CALENDARIO
     // aca vamos a despachar una funcion que me va a guardar los datos de la agenda de este cliente en de tal propiedad
     setSelected({
       startDate: state.selection1.startDate,
@@ -58,9 +67,38 @@ export default function Calendar({
       state.selection1.endDate.getDate() - state.selection1.startDate.getDate();
     const total = nochesNum * price;
 
-    navigate(
-      `/resumePay?title=${title}&description=${description}&price=${price}&nigths=${nochesNum}&total=${total}`
-    );
+    // Probando ---------------------------
+    if (auth === null) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops no estas registrado",
+        text: "Para poder realizar la reserva, debes estar registrado como Cliente",
+      });
+    } else if (auth.role === "Client") {
+      navigate(
+        `/resumePay?id=${propId}&title=${title}&bookings=${JSON.stringify(
+          dataBooking
+        )}&description=${description}&price=${price}&nigths=${nochesNum}&total=${total}&url=${JSON.stringify(
+          url
+        )}`
+      );
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops no estas registrado",
+        text: "Para poder realizar la reserva, debes estar registrado como Cliente",
+      });
+    }
+
+    // Probando ------------------------
+
+    // navigate(
+    //   `/resumePay?id=${propId}&title=${title}&bookings=${JSON.stringify(
+    //     dataBooking
+    //   )}&description=${description}&price=${price}&nigths=${nochesNum}&total=${total}&url=${JSON.stringify(
+    //     url
+    //   )}`
+    // );
   }
 
   function reset() {
@@ -98,6 +136,9 @@ export default function Calendar({
     }
   };
 
+  console.log(
+    getDatesInRange(state.selection1.startDate, state.selection1.endDate)
+  );
   //   console.log(
   //     "funciton:",
   //     getDatesInRange(state.selection1.startDate, state.selection1.endDate)
@@ -134,25 +175,27 @@ export default function Calendar({
           ranges={[state.selection1, selected]}
           locale={es}
           disabledDates={arr3}
+          minDate={new Date()}
         />
       </div>
       <div>
-        <p className="">
+        <hr />
+        <p className="c-description title is-6">
           Precio por noche : <strong> USD$:{price}</strong>{" "}
         </p>
       </div>
       <div>
-        <p className="subTitleData">Resumen de la reserva</p>
+        {/* <p className="subTitleData c-description title is-6">Resumen de la reserva</p> */}
 
         <div>
-          <p>
+          <p className="c-description title is-6">
             Noches a hospedarse :
             {state.selection1.endDate.getDate() -
               state.selection1.startDate.getDate()}
           </p>
         </div>
 
-        <p>
+        <p className="c-description title is-6">
           Precio total a pagar : USD$:
           {(state.selection1.endDate.getDate() -
             state.selection1.startDate.getDate()) *
@@ -167,11 +210,12 @@ export default function Calendar({
           margin: "20px 0",
         }}
       >
-        <button className="button is-large is-warning" onClick={reset}>
+        <hr />
+        <button className="button is-warning" onClick={reset}>
           Reset
         </button>
         <button
-          className="button is-large is-primary is-outlined is-active"
+          className="button is-primary is-outlined is-active"
           onClick={select}
         >
           Reservar
