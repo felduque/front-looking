@@ -9,13 +9,13 @@ const useLogout = () => {
 
     if (auth.role === "Client") {
       try {
-        localStorage.clear();
+        window.localStorage.clear();
       } catch (err) {
         console.error(err);
       }
     } else if (auth.role === "Tenant" || auth.role === "Admin") {
       try {
-        localStorage.clear();
+        window.localStorage.clear();
       } catch (err) {
         console.error(err);
       }

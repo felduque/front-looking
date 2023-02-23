@@ -16,7 +16,7 @@ export default function UserDetails() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          token: localStorage.getItem("token"),
+          token: window.localStorage.getItem("token"),
         }),
       })
         .then((res) => res.json())
@@ -27,7 +27,7 @@ export default function UserDetails() {
 
           if (data.data == "token expired") {
             alert("Token expired login again");
-            localStorage.clear();
+            window.localStorage.clear();
             window.location.href = "./login";
           }
         });
@@ -39,7 +39,7 @@ export default function UserDetails() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          token: localStorage.getItem("token"),
+          token: window.localStorage.getItem("token"),
         }),
       })
         .then((res) => res.json())
@@ -50,7 +50,7 @@ export default function UserDetails() {
 
           if (data.data == "token expired") {
             alert("Token expired login again");
-            localStorage.clear();
+            window.localStorage.clear();
             window.location.href = "./login";
           }
         });

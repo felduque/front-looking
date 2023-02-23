@@ -88,12 +88,12 @@ export default function Login({ closeModal }) {
                   fullName,
                 })
               );
-              localStorage.setItem("token", data.data);
-              localStorage.setItem("loggedClient", true);
+              window.localStorage.setItem("token", data.data);
+              window.localStorage.setItem("loggedClient", true);
               setEmail("");
               setPassword("");
 
-              navigate("/home");
+              window.location.href = "./home";
             }
           });
       } catch (err) {
@@ -142,12 +142,12 @@ export default function Login({ closeModal }) {
                   fullName,
                 })
               );
-              localStorage.setItem("token", data.data);
-              localStorage.setItem("loggedTenant", true);
+              window.localStorage.setItem("token", data.data);
+              window.localStorage.setItem("loggedTenant", true);
               setEmail("");
               setPassword("");
 
-              navigate("/home");
+              window.location.href = "./home";
             }
           });
       } catch (err) {
@@ -195,12 +195,12 @@ export default function Login({ closeModal }) {
                   fullName,
                 })
               );
-              localStorage.setItem("token", data.data);
-              localStorage.setItem("loggedAdmin", true);
+              window.localStorage.setItem("token", data.data);
+              window.localStorage.setItem("loggedAdmin", true);
               setEmail("");
               setPassword("");
 
-              navigate("/home");
+              window.location.href = "./home";
             }
           });
       } catch (err) {
