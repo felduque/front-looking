@@ -26,6 +26,7 @@ import {
   geocodeByPlaceId,
   getLatLng,
 } from "react-places-autocomplete";
+import Switch from "react-switch";
 
 // Fin de Google Maps
 
@@ -93,6 +94,7 @@ export default function Filters({ closeModal, title }) {
   const [capacity, setCapacity] = useState("");
   const [beds, setBeds] = useState("");
   const [baths, setBaths] = useState("");
+  const [type, setType] = useState("");
   const [filters, setFilters] = useState({
     price: "",
     rating: "",
@@ -107,6 +109,7 @@ export default function Filters({ closeModal, title }) {
     pets: "",
     baths: "",
     beds: "",
+    type: "",
   });
 
   //-----------------------------------------------------------------//
@@ -118,7 +121,7 @@ export default function Filters({ closeModal, title }) {
       ...filters,
       services: services,
     });
-    let urlfilter = `${urlbase}&order=${filters.order}&priceMin=${priceRange[0]}&priceMax=${priceRange[1]}&rating=${filters.rating}&capacity=${filters.capacity}&country=${filters.country}&state=${filters.state}&services=${filters.services}&pets=${filters.pets}&party=${filters.party}&smoke=${filters.smoke}&beds=${filters.beds}&baths=${filters.beds}`;
+    let urlfilter = `${urlbase}&order=${filters.order}&priceMin=${priceRange[0]}&priceMax=${priceRange[1]}&rating=${filters.rating}&capacity=${filters.capacity}&country=${filters.country}&state=${filters.state}&services=${filters.services}&pets=${filters.pets}&party=${filters.party}&smoke=${filters.smoke}&beds=${filters.beds}&baths=${filters.beds}&type=${filters.type}`;
     dispatch(getPropertiesAsync(urlfilter));
   };
   const handleSelect = async (value) => {
@@ -151,7 +154,7 @@ export default function Filters({ closeModal, title }) {
   };
 
   const handleClickFilter = (e) => {
-    let urlfilter = `${urlbase}&order=${filters.order}&priceMin=${priceRange[0]}&priceMax=${priceRange[1]}&rating=${filters.rating}&capacity=${filters.capacity}&country=${filters.country}&state=${filters.state}&services=${filters.services}&pets=${filters.pets}&party=${filters.party}&smoke=${filters.smoke}&beds=${filters.beds}&baths=${filters.baths}`;
+    let urlfilter = `${urlbase}&order=${filters.order}&priceMin=${priceRange[0]}&priceMax=${priceRange[1]}&rating=${filters.rating}&capacity=${filters.capacity}&country=${filters.country}&state=${filters.state}&services=${filters.services}&pets=${filters.pets}&party=${filters.party}&smoke=${filters.smoke}&beds=${filters.beds}&baths=${filters.baths}&type=${filters.type}`;
     dispatch(getPropertiesAsync(urlfilter));
     // closeModal();
   };
@@ -226,6 +229,22 @@ export default function Filters({ closeModal, title }) {
     }
   };
 
+  const handleTypeButtonClick = (value) => {
+    if (type === value) {
+      setType("");
+      setFilters({
+        ...filters,
+        type: "",
+      });
+    } else {
+      setType(value);
+      setFilters({
+        ...filters,
+        type: value,
+      });
+    }
+  };
+
   const handleKeyDown = (event) => {
     if (event.key === "Escape") {
       closeModal();
@@ -240,10 +259,6 @@ export default function Filters({ closeModal, title }) {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [filters]);
-
-  console.log("soy Filters Properties ", filterProperties);
-  console.log(filterProperties.result.length);
-  // console.log(filters);
 
   if (!isLoaded) return <h1>Cargando...</h1>;
   return (
@@ -319,6 +334,56 @@ export default function Filters({ closeModal, title }) {
                         </div>
                       )}
                     </PlacesAutocomplete>
+                  </div>
+                </div>
+                <div className="type-container box">
+                  <div className="is-flex is-align-items-center">
+                    <h1 className="title is-size-4 align-left">
+                      Tipo de propiedad
+                    </h1>
+                    <img src={abcfilerIcon} className="rating-icon" />
+                  </div>
+                  <div>
+                    <button
+                      className={`capacity-button button is-active mr-2 ${
+                        type === "casa" ? "capacity-button-active" : ""
+                      }`}
+                      onClick={() => handleTypeButtonClick("casa")}
+                    >
+                      Casa
+                    </button>
+                    <button
+                      className={`capacity-button button is-active mr-2 ${
+                        type === "cabaña" ? "capacity-button-active" : ""
+                      }`}
+                      onClick={() => handleTypeButtonClick("cabaña")}
+                    >
+                      Cabaña
+                    </button>
+                    <button
+                      className={`capacity-button button is-active mr-2 ${
+                        type === "apartamento" ? "capacity-button-active" : ""
+                      }`}
+                      onClick={() => handleTypeButtonClick("apartamento")}
+                    >
+                      Apartamento
+                    </button>
+                    <button
+                      className={`capacity-button button is-active mr-2 ${
+                        type === "habitacion" ? "capacity-button-active" : ""
+                      }`}
+                      onClick={() => handleTypeButtonClick("habitacion")}
+                    >
+                      Habitación
+                    </button>
+                    <button
+                      className={`capacity-button button is-active mr-2 ${
+                        type === "camping" ? "capacity-button-active" : ""
+                      }`}
+                      onClick={() => handleTypeButtonClick("camping")}
+                    >
+                      Camping
+                    </button>
                   </div>
                 </div>
                 <div className="alpha-container box">
@@ -598,59 +663,84 @@ export default function Filters({ closeModal, title }) {
                     options={optionsServices}
                     onChange={handleServiceChange}
                     value={selectedServices}
+                    placeholder="Seleccionar..."
                   />
                 </div>
                 <div className="checkboxes-container box">
                   <h1 className="title is-size-4">Reglas de la propiedad</h1>
                   <div className="field">
                     <label className="label" htmlFor="pets">
-                      ¿Permitido mascostas?&nbsp;
-                      <label className="custom-checkbox">
-                        <input
-                          id="pets"
-                          type="checkbox"
-                          name="pets"
-                          value={filters.pets}
-                          onChange={(e) =>
-                            setFilters({ ...filters, pets: e.target.checked })
-                          }
-                        />
-                        <span className="checkmark"></span>
-                      </label>
+                      ¿Permitido mascotas?
+                      <Switch
+                        id="pets"
+                        name="pets"
+                        checked={filters.pets ? true : ""}
+                        onChange={(value) => {
+                          const newValue = value ? true : "";
+                          setFilters((prevInputs) => ({
+                            ...prevInputs,
+                            pets: newValue,
+                          }));
+                        }}
+                        onColor="#86d3ff"
+                        onHandleColor="#2693e6"
+                        handleDiameter={30}
+                        boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                        activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+                        height={20}
+                        width={48}
+                        className="react-switch"
+                      />
                     </label>
                   </div>
                   <div className="field">
-                    <label className="label" htmlFor="">
-                      ¿Permitido fiestas?&nbsp;
-                      <label className="custom-checkbox">
-                        <input
-                          id="party"
-                          type="checkbox"
-                          name="party"
-                          value={filters.party}
-                          onChange={(e) =>
-                            setFilters({ ...filters, party: e.target.checked })
-                          }
-                        />
-                        <span className="checkmark"></span>
-                      </label>
+                    <label className="label" htmlFor="party">
+                      ¿Permitido fiestas?
+                      <Switch
+                        id="party"
+                        name="party"
+                        checked={filters.party ? true : ""}
+                        onChange={(value) => {
+                          const newValue = value ? true : "";
+                          setFilters((prevInputs) => ({
+                            ...prevInputs,
+                            party: newValue,
+                          }));
+                        }}
+                        onColor="#86d3ff"
+                        onHandleColor="#2693e6"
+                        handleDiameter={30}
+                        boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                        activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+                        height={20}
+                        width={48}
+                        className="react-switch"
+                      />
                     </label>
                   </div>
                   <div className="field">
-                    <label className="label" htmlFor="">
-                      ¿Permitido fumar?&nbsp;
-                      <label className="custom-checkbox">
-                        <input
-                          id="smoke"
-                          type="checkbox"
-                          name="smoke"
-                          value={filters.smoke}
-                          onChange={(e) =>
-                            setFilters({ ...filters, smoke: e.target.checked })
-                          }
-                        />
-                        <span className="checkmark"></span>
-                      </label>
+                    <label className="label" htmlFor="smoke">
+                      ¿Permitido fumar?
+                      <Switch
+                        id="smoke"
+                        name="smoke"
+                        checked={filters.smoke ? true : ""}
+                        onChange={(value) => {
+                          const newValue = value ? true : "";
+                          setFilters((prevInputs) => ({
+                            ...prevInputs,
+                            smoke: newValue,
+                          }));
+                        }}
+                        onColor="#86d3ff"
+                        onHandleColor="#2693e6"
+                        handleDiameter={30}
+                        boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                        activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+                        height={20}
+                        width={48}
+                        className="react-switch"
+                      />
                     </label>
                   </div>
                 </div>

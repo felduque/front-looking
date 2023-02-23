@@ -8,6 +8,8 @@ import Filters from "../Filters/Filters";
 import { useLoadScript } from "@react-google-maps/api";
 import { Pagination } from "../Pagination/Pagination";
 import Loader from "../Loader/Loader";
+import CarruselPro from "./CarruselPro.jsx";
+import GoUpButton from "../GoUpButton/GoUpButton.jsx";
 
 function Home() {
   const { isLoaded } = useLoadScript({
@@ -29,7 +31,7 @@ function Home() {
   }, []);
 
   //----------------------Pagintado--------------------------------
-  const [propertyPerPage, setPropertyPerAge] = useState(24);
+  const [propertyPerPage, setPropertyPerAge] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
 
   const lastIndex = currentPage * propertyPerPage;
@@ -38,15 +40,32 @@ function Home() {
 
   const statePropertys = useSelector((state) => state.properties.allPropertys);
 
+  // console.log("Soy propiedades.result", statePropertys.result);
   const totalProperty = statePropertys.result?.length;
+
+  // let arrayFiltrados = statePropertys.result.filter((e) => {
+  //   e.pro === "true";
+  // });
+  // console.log("Soy array Filtrados", arrayFiltrados);
 
   console.log(loading);
   if (loading || !isLoaded) {
     return <Loader />;
   }
 
+  function mostrarOcultar() {
+    const div = document.getElementById("miDiv");
+    if (div.style.display === "none") {
+      div.style.display = "block";
+    } else {
+      div.style.display = "none";
+    }
+  }
+
   return (
     <div>
+      <CarruselPro />
+      <hr className="c-hr" />
       <div className="containerCards">
         <div className="columns is-multiline box space-justify">
           {statePropertys.result
@@ -66,6 +85,7 @@ function Home() {
                     country={property.country}
                     state={property.state}
                     region={property.region}
+                    comments={property.Comments}
                   ></Card>
                 </div>
               );

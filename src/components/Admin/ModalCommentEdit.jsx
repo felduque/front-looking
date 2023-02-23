@@ -86,10 +86,11 @@ export default function ModalCommentEdit({
             className="button is-success"
             onClick={() => {
               Swal.fire({
-                title: "Estas modificando tu comentario, continuar?",
+                title: "¿Estás modificando tu comentario, continuar?",
                 showDenyButton: true,
                 confirmButtonText: "Confirmar",
                 denyButtonText: `Cancelar`,
+                reverseButtons: true,
               }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {

@@ -9,8 +9,10 @@ import useLogout from "../Acceso/Sign In/useLogout";
 import logoIcon from "../../assets/logo-icon.png";
 import userIcon from "../../assets/user-default-icon.png";
 import Login from "../Acceso/Sign In/Login";
+//import useAuth from "../Acceso/hooks/useAuth";
 
 export default function Navbar() {
+  //const [auth, setAuth] = useState(null);
   const [auth, setAuth] = useState(null);
   const logout = useLogout();
   const { user, logOut } = UserAuth();
@@ -22,16 +24,17 @@ export default function Navbar() {
     const storedAuth = JSON.parse(localStorage.getItem("auth"));
     if (storedAuth) {
       setAuth(storedAuth);
+      //console.log(storedAuth.role);
     }
   }, []);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const storedAuth = JSON.parse(localStorage.getItem("auth") || "{}");
+      const storedAuth = JSON.parse(localStorage.getItem("auth"));
       const idClient = storedAuth?.idClient;
       const idTenant = storedAuth?.idTenant;
 
-      if (storedAuth.role === "Client") {
+      if (storedAuth && storedAuth.role === "Client") {
         const usersLocal = await getUserById(idClient);
         setUsersLocal(usersLocal.data);
       } else if (storedAuth.role === "Tenant" || storedAuth.role === "Admin") {
@@ -86,13 +89,19 @@ export default function Navbar() {
             </a>
           </div>
 
-          <div id="navbarBasicExample" className="navbar-menu">
-            <div className="navbar-start suscribe-button">
-              <Link to="/suscribe" className="navbar-item">
-                Suscripción
-              </Link>
+          {auth?.role === "Tenant" ? (
+            <div id="navbarBasicExample" className="navbar-menu">
+              <div className="navbar-start suscribe-button">
+                <Link to="/suscribe" className="navbar-item">
+                  Suscripción
+                </Link>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div id="navbarBasicExample" className="navbar-menu">
+              <div className="navbar-start suscribe-button"></div>
+            </div>
+          )}
 
           {location.pathname === "/home" ? <SearchBar /> : null}
 
@@ -101,16 +110,17 @@ export default function Navbar() {
               <div className="buttons">
                 {
                   // Poner ! en auth para testear paneles sin iniciar sesión
-                  auth?.role === "Tenant" || auth?.role === "Admin" || user ? (
+                  auth?.role === "Tenant" ||
+                  auth?.role === "Admin" ||
+                  usersLocal.isPro === true ||
+                  user ? (
                     <div className="navbar-item has-dropdown is-hoverable">
                       <a className="navbar-link">
                         {auth?.avatar ? (
-                          <figure class="image">
+                          <figure class="image is-50x50">
                             <img
                               src={usersLocal?.avatar}
                               className="is-rounded"
-                              width="60"
-                              height="60"
                             />
                           </figure>
                         ) : user?.photoURL ? (
@@ -129,9 +139,11 @@ export default function Navbar() {
 
                       <div className="navbar-dropdown is-right">
                         <span className="name-user-navbar">
-                        <a className="navbar-item name-user-navbar">
-                          <strong>{usersLocal?.fullName || user?.displayName}</strong>
-                        </a>
+                          <a className="navbar-item name-user-navbar">
+                            <strong>
+                              {usersLocal?.fullName || user?.displayName}
+                            </strong>
+                          </a>
                         </span>
                         <Link to="/createProperty" className="navbar-item">
                           Publicar propiedad
@@ -152,7 +164,7 @@ export default function Navbar() {
                           <figure class="image">
                             <img
                               src={usersLocal?.avatar}
-                              className="is-rounded"
+                              class="is-rounded is-fullwidth"
                               width="60"
                               height="60"
                             />
@@ -161,7 +173,7 @@ export default function Navbar() {
                           <figure class="image">
                             <img
                               src={user.providerData[0]?.photoURL}
-                              className="is-rounded"
+                              class="is-rounded is-fullwidth"
                               width="60"
                               height="60"
                             />
@@ -173,8 +185,10 @@ export default function Navbar() {
 
                       <div className="navbar-dropdown is-right">
                         <span className="name-user-navbar">
-                           <a className="navbar-item name-user-navbar">
-                            <strong>{usersLocal?.fullName || user?.displayName}</strong>
+                          <a className="navbar-item name-user-navbar">
+                            <strong>
+                              {usersLocal?.fullName || user?.displayName}
+                            </strong>
                           </a>
                         </span>
                         <Link to="/settings" className="navbar-item">
@@ -189,10 +203,11 @@ export default function Navbar() {
                   ) : (
                     <div>
                       <Link
-                        to="/createProperty"
+                        to="/home"
                         className="button is-link is-outlined"
+                        onClick={() => setIsActive(true)}
                       >
-                        Publicar propiedad
+                        Publicar una propiedad
                       </Link>
                       <button
                         className="button is-info is-outlined"

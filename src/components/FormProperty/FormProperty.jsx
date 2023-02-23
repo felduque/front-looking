@@ -19,7 +19,7 @@ import {
   getLatLng,
 } from "react-places-autocomplete";
 import Swal from "sweetalert2";
-
+import Switch from "react-switch";
 import validateForm from "./validate.js";
 
 // Fin Google Maps
@@ -43,11 +43,24 @@ const options = [
   { value: "Parilla", label: "Parilla" },
   { value: "Cuna", label: "Cuna" },
 ];
-const predefinedTitleNames = ["Casa", "Apartamento", "Habitación", "Cabaña"];
+const predefinedTitleNames = [
+  "Apartamento",
+  "Cabaña",
+  "Casa",
+  "Camping",
+  "Habitación",
+  "Habitación comunitaria",
+];
+const predefinedPropertyTypes = [
+  "Apartamento",
+  "Cabaña",
+  "Casa",
+  "Habitacion",
+  "Camping",
+];
 
 export default function FormHostCreate() {
   const auth = JSON.parse(localStorage.getItem("auth"));
-  console.log("Soy idTenan", auth.idTenant);
 
   // Google Maps
   const libraries = ["places"];
@@ -115,7 +128,9 @@ export default function FormHostCreate() {
     state: "",
     region: "",
     city: "",
-    id_tenant: auth.idTenant,
+    id_tenant: auth?.idTenant,
+    type: "",
+    pro: false,
   });
   // estados relacionados con inputs.images para mostrar lo subido
   const [urlImages, setUrlImages] = useState([]);
@@ -148,7 +163,22 @@ export default function FormHostCreate() {
     [urlImages]
   );
 
-  const handleChange = (e, actionMeta = false) => {
+  useEffect(() => {
+    const axiosDataTenant = async () => {
+      const data = await axios(
+        `https://looking.fly.dev/tenant/gettenant/${auth.idTenant}`
+      );
+      if (data.data.isPro) {
+        setInputs({
+          ...inputs,
+          pro: true,
+        });
+      }
+    };
+    axiosDataTenant();
+  }, []);
+
+  const handleChange = (e, actionMeta = false, nextChecked) => {
     // Select no tiene name en el evento, usa ActionMeta
     if (actionMeta) {
       if (actionMeta.name === "services") {
@@ -185,6 +215,7 @@ export default function FormHostCreate() {
         [e.target.name]: e.target.value,
       });
       setErrors(validateForm({ ...inputs, [e.target.name]: e.target.value }));
+      setChecked(nextChecked);
     }
   };
 
@@ -196,9 +227,19 @@ export default function FormHostCreate() {
     setInputs({ ...inputs, image: arrayImg });
   };
 
+  const handlePropertyTypeButtonClick = (typeName) => {
+    setInputs((inputs) => ({
+      ...inputs,
+      type: typeName,
+    }));
+    console.log("typeName:", typeName);
+    console.log("inputs:", inputs);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (
+      !inputs.type ||
       !inputs.title ||
       !inputs.checkIn ||
       !inputs.checkOut ||
@@ -210,7 +251,7 @@ export default function FormHostCreate() {
       urlImages.length < 1
     ) {
       Swal.fire({
-        title: "Error al publicar Place",
+        title: "Error al publicar Propiedad",
         text: "Algo salió mal, intenta de nuevo.",
         icon: "error",
         confirmButtonText: "Entendido",
@@ -230,8 +271,8 @@ export default function FormHostCreate() {
         .then(function (response) {
           console.log(response);
           Swal.fire({
-            title: "Place publicado con éxito",
-            text: "Ahora tu Place aparece en la portada.",
+            title: "Propiedad publicada con éxito",
+            text: "Ahora tu Propiedad aparece en la portada.",
             imageUrl: tipiCreatePlace,
             imageWidth: 200,
             imageHeight: 180,
@@ -267,6 +308,7 @@ export default function FormHostCreate() {
       title: titleName,
     }));
   };
+  const [checked, setChecked] = useState(false);
 
   if (!isLoaded) return <div>Cargando...</div>;
   return (
@@ -274,8 +316,30 @@ export default function FormHostCreate() {
       <div className="container-general">
         <div className="container-property">
           <div className="container-form-property">
-            <div className="title is-2">Crea un Place para los viajeros</div>
+            <div className="title is-2">Crea un lugar para los Viajeros</div>
             <form onSubmit={handleSubmit} encType="multiple" className="box">
+              <div className="field">
+                <label className="label">Tipo de propiedad</label>
+                <div className="buttons">
+                  {predefinedPropertyTypes.map((typeName) => (
+                    <button
+                      key={typeName}
+                      className={`button ${
+                        inputs.type === typeName ? "is-info" : ""
+                      }`}
+                      type="button"
+                      onClick={() => handlePropertyTypeButtonClick(typeName)}
+                    >
+                      {typeName}
+                    </button>
+                  ))}
+                  {errors.type ? (
+                    <p>
+                      <span className="error">{errors.type}</span>
+                    </p>
+                  ) : null}
+                </div>
+              </div>
               <div className="field">
                 <label className="label" htmlFor="title">
                   Título del Alojamiento
@@ -297,7 +361,7 @@ export default function FormHostCreate() {
               </div>
               <div className="field">
                 <input
-                  className="input"
+                  className="input pr-1"
                   id="title"
                   type="text"
                   name="title"
@@ -313,7 +377,7 @@ export default function FormHostCreate() {
                   Descripción del alojamiento
                 </label>
                 <textarea
-                  className="textarea"
+                  className="textarea pr-1"
                   id="description"
                   name="description"
                   value={inputs.description}
@@ -329,7 +393,7 @@ export default function FormHostCreate() {
                     Capacidad de personas:{" "}
                   </label>
                   <input
-                    className="input"
+                    className="input pr-1"
                     id="capacity"
                     type="number"
                     name="capacity"
@@ -339,7 +403,9 @@ export default function FormHostCreate() {
                     onChange={handleChange}
                   />
                   {errors.capacity ? (
-                    <span className="error">{errors.capacity}</span>
+                    <p>
+                      <span className="error">{errors.capacity}</span>
+                    </p>
                   ) : null}
                 </div>
                 <div className="field">
@@ -347,7 +413,7 @@ export default function FormHostCreate() {
                     Número de camas
                   </label>
                   <input
-                    className="input"
+                    className="input pr-1"
                     id="beds"
                     type="number"
                     name="beds"
@@ -357,7 +423,9 @@ export default function FormHostCreate() {
                     onChange={handleChange}
                   />
                   {errors.beds ? (
-                    <span className="error">{errors.beds}</span>
+                    <p>
+                      <span className="error">{errors.beds}</span>
+                    </p>
                   ) : null}
                 </div>
                 <div className="field">
@@ -365,7 +433,7 @@ export default function FormHostCreate() {
                     Número de baños
                   </label>
                   <input
-                    className="input"
+                    className="input pr-1"
                     id="baths"
                     type="number"
                     name="baths"
@@ -414,7 +482,7 @@ export default function FormHostCreate() {
                       />
                     </div>
                   </div>
-                  <div className="column">
+                  <div className="column is-8 clock-margin-right">
                     <label className="label" htmlFor="checkOut">
                       Horario de salida
                     </label>
@@ -436,52 +504,79 @@ export default function FormHostCreate() {
               <div className="areas-spaces-top">
                 <div className="field">
                   <label className="label" htmlFor="smoke">
-                    ¿Permitido fumar?&nbsp;
-                    <label class="custom-checkbox">
-                      <input
-                        id="smoke"
-                        type="checkbox"
-                        name="smoke"
-                        value={inputs.smoke}
-                        onChange={handleChange}
-                      />
-                      <span className="checkmark"></span>
-                    </label>
+                    ¿Permitido fumar?
+                    <Switch
+                      id="smoke"
+                      name="smoke"
+                      checked={inputs.smoke}
+                      onChange={(value) =>
+                        setInputs((prevInputs) => ({
+                          ...prevInputs,
+                          smoke: value,
+                        }))
+                      }
+                      onColor="#86d3ff"
+                      onHandleColor="#2693e6"
+                      handleDiameter={30}
+                      boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                      activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+                      height={20}
+                      width={48}
+                      className="react-switch"
+                    />
                   </label>
                 </div>
                 <div className="field">
-                  <label className="label" htmlFor="">
-                    ¿Permitido fiestas?&nbsp;
-                    <label class="custom-checkbox">
-                      <input
-                        id="party"
-                        type="checkbox"
-                        name="party"
-                        value={inputs.party}
-                        onChange={handleChange}
-                      />
-                      <span className="checkmark"></span>
-                    </label>
+                  <label className="label" htmlFor="party">
+                    ¿Permitido fiestas?
+                    <Switch
+                      id="party"
+                      name="party"
+                      checked={inputs.party}
+                      onChange={(value) =>
+                        setInputs((prevInputs) => ({
+                          ...prevInputs,
+                          party: value,
+                        }))
+                      }
+                      onColor="#86d3ff"
+                      onHandleColor="#2693e6"
+                      handleDiameter={30}
+                      boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                      activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+                      height={20}
+                      width={48}
+                      className="react-switch"
+                    />
                   </label>
                 </div>
                 <div className="field">
                   <label className="label" htmlFor="pets">
-                    ¿Permitido mascostas?&nbsp;
-                    <label class="custom-checkbox">
-                      <input
-                        id="pets"
-                        type="checkbox"
-                        name="pets"
-                        value={inputs.pets}
-                        onChange={handleChange}
-                      />
-                      <span className="checkmark"></span>
-                    </label>
+                    ¿Permitido mascotas?
+                    <Switch
+                      id="pets"
+                      name="pets"
+                      checked={inputs.pets}
+                      onChange={(value) =>
+                        setInputs((prevInputs) => ({
+                          ...prevInputs,
+                          pets: value,
+                        }))
+                      }
+                      onColor="#86d3ff"
+                      onHandleColor="#2693e6"
+                      handleDiameter={30}
+                      boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                      activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+                      height={20}
+                      width={48}
+                      className="react-switch"
+                    />
                   </label>
                 </div>
               </div>
               <div className="areas-spaces-top">
-                <div className="field">
+                <div className="field ">
                   <label className="label" htmlFor="">
                     Ubicación
                   </label>
@@ -505,7 +600,7 @@ export default function FormHostCreate() {
                       <input
                         {...getInputProps({
                           placeholder: "Busca tu dirección ...",
-                          className: "input",
+                          className: "input pr-1",
                         })}
                       />
                       <div className="autocomplete-dropdown-container">
@@ -542,10 +637,10 @@ export default function FormHostCreate() {
               <div className="areas-spaces-top">
                 <div className="field">
                   <p>
-                    <label className="label">Imágenes del lugar</label>
+                    <label className="label pb-2">Imágenes del lugar</label>
                   </p>
                   <button
-                    className="button is-info"
+                    className="button is-info mb-5"
                     disabled={inputs.image.length === 5 ? true : false}
                     type="button"
                   >
@@ -571,15 +666,18 @@ export default function FormHostCreate() {
                     ""
                   )}
                   {urlImages.map((img, i) => (
-                    <div key={i}>
-                      <img
-                        key={i}
-                        src={img}
-                        className="is-multiline loaded-images"
-                      ></img>
-                      <button id={i} type="button" onClick={handleClickImg}>
-                        X
-                      </button>
+                    <div className="container-images ">
+                      <div key={i}>
+                        <img
+                          key={i}
+                          src={img}
+                          className="loaded-images"
+                          style={{ width: "250px", height: "200px" }}
+                        ></img>
+                        <button id={i} type="button" onClick={handleClickImg}>
+                          X
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -590,7 +688,7 @@ export default function FormHostCreate() {
                     Precio por Noche
                   </label>
                   <CurrencyInput
-                    className="input"
+                    className="input pr-1"
                     id="price"
                     name="price"
                     placeholder="Please enter a number"
@@ -612,20 +710,35 @@ export default function FormHostCreate() {
                   ) : null}
                 </div>
               </div>
-              <button
-                className="button is-link is-rounded center-button-publish"
-                type="submit"
-                disabled={errorsLength !== 0 && validateImages ? true : false}
-              >
-                Publicar Alojamiento
-              </button>
+              <div className="container">
+                <div className="text-center">
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      alignItems: "center",
+                      paddingTop: "50px",
+                    }}
+                  >
+                    <button
+                      className="button is-warning is-rounded ml-3 mr-6"
+                      onClick={cancelPublish}
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      className="button is-link is-rounded ml-6 mr-4"
+                      type="submit"
+                      disabled={
+                        errorsLength !== 0 && validateImages ? true : false
+                      }
+                    >
+                      Publicar Alojamiento
+                    </button>
+                  </div>
+                </div>
+              </div>
             </form>
-            <button
-              className="button  is-warning is-rounded center-button-cancel"
-              onClick={cancelPublish}
-            >
-              Cancelar
-            </button>
           </div>
         </div>
       </div>

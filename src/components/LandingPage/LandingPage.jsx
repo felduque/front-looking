@@ -5,7 +5,6 @@ import "./LandingPage.css";
 import "./PricingTable.css";
 import "./Reviews.css";
 import logoLookingPlace from "../../assets/logo-icon.png";
-import { Link } from "react-router-dom";
 import video from "../../assets/landingpage.mp4";
 import { getPropertiesAsync } from "../../redux/features/getPropertySlice";
 
@@ -15,6 +14,7 @@ import t3 from "../../assets/testimonials/t-3.jpg";
 import t4 from "../../assets/testimonials/t-4.jpg";
 import t5 from "../../assets/testimonials/t-5.jpg";
 import Loader from "../Loader/Loader";
+import { Link } from "react-router-dom";
 
 export default function LandingPage() {
   const url = "https://looking.fly.dev/properties";
@@ -37,7 +37,12 @@ export default function LandingPage() {
 
   const totalProperty = statePropertys.result?.length;
 
-  for (let i = 1; i <= Math.ceil(totalProperty / propertyPerPage); i++) {
+  const arrayFiltrados = statePropertys.result?.filter((e) => e.pro === true);
+  // console.log("Soy array Filtrados", arrayFiltrados);
+
+  const arrayFiltradosLong = arrayFiltrados?.length;
+
+  for (let i = 1; i <= Math.ceil(arrayFiltradosLong / propertyPerPage); i++) {
     pageNumber.push(i);
   }
 
@@ -102,7 +107,7 @@ export default function LandingPage() {
             <div className="carrusel-left">
               <button
                 disabled={currentPage === 1 ? true : false}
-                className={`pagination-previous button is-info is-outlined ${
+                className={`pagination-previous button is-warning is-outlined ${
                   currentPage === 1 ? "is-disabled" : ""
                 }`}
                 onClick={onPreviusPage}
@@ -111,8 +116,8 @@ export default function LandingPage() {
               </button>
             </div>
 
-            <div className="columns is-multiline box">
-              {statePropertys.result
+            <div className="container-pro columns is-multiline box">
+              {arrayFiltrados
                 ?.map((property, i) => {
                   return (
                     <div key={i}>
@@ -139,7 +144,7 @@ export default function LandingPage() {
             <div className="carrusel-right">
               <button
                 disabled={currentPage >= pageNumber.length ? true : false}
-                className={`pagination-next button is-info is-outlined space-right-next ${
+                className={`pagination-next button is-warning is-outlined space-right-next ${
                   currentPage >= pageNumber.length ? "is-disabled" : ""
                 }`}
                 onClick={onNextPage}
@@ -249,57 +254,6 @@ export default function LandingPage() {
               </div>
             </div>
           </section>
-        </div>
-
-        <div className="conteiner-planes">
-          <div className="title is-4 center-text is-italic text-planes">
-            Conoce nuestros planes gratis y Profesional
-          </div>
-          <div className="pricing-table">
-            <div class="cards">
-              <div class="card shadow">
-                <ul>
-                  <li class="pack">Básico</li>
-                  <li id="basic" class="price bottom-bar">
-                    Gratis
-                  </li>
-                  <li class="bottom-bar">Busca y publica hospedaje</li>
-                  <li class="bottom-bar">Comenta y puntúa tus visitas</li>
-                  <li>
-                    <div className="button-bottom">
-                      <button class="btn ">
-                        <i class="bi bi-bag "></i>
-                        <a href="/login">
-                          <strong>Obtener ahora</strong>
-                        </a>
-                      </button>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <div class="card active">
-                <ul>
-                  <li class="pack">Profesional</li>
-                  <li id="professional" class="price bottom-bar">
-                    $8.99{" "}
-                    <span className="new-price-oro">
-                      <del>$13.99</del>
-                    </span>
-                  </li>
-                  <li class="bottom-bar">Beneficios del plan básico</li>
-                  <li class="bottom-bar">Mejor posicionamiento</li>
-                  <li class="bottom-bar">Propiedades sin límite</li>
-                  <li class="bottom-bar">Panel de control avanzado</li>
-                  <li>
-                    <button class="btn active-btn">
-                      <i class="bi bi-bag"></i>
-                      <strong>Obtener ahora</strong>
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </>

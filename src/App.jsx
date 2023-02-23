@@ -10,7 +10,7 @@ import Login from "./components/Acceso/Sign In/Login";
 import Admin from "./components/Admin/Admin";
 import ForgotPassword from "./components/Acceso/Sign In/ForgotPass";
 /*import ResetPassword from "./components/Acceso/Sign In/ResetPassword";*/
-//import UserDetails from "./components/Acceso/Sign In/userData";
+import UserDetails from "./components/Acceso/Sign In/userData";
 
 /*Auth Guards*/
 //import RequireAuth from "./components/ProtectRoute/RequireAuth";
@@ -27,9 +27,11 @@ import Suscribe from "./components/Pay/Suscribe";
 import AboutUs from "./components/AboutUs/AboutUs";
 import ResumePay from "./components/ResumePay/ResumePay";
 import PaySuccess from "./components/MercadoPago/MPSuccess/MPSuccess";
-import PayFailure from "./components/MercadoPago/MPSuccess/MPSuccess";
+import PayFailure from "./components/MercadoPago/MPFailure/MPFailure";
 import LandingPage from "./components/LandingPage/LandingPage.jsx";
 import Footer from "././components/Footer/Footer";
+import SuscribeSuccess from "./components/Pay/SuscribeSucces.jsx";
+import SuscribeFailure from "./components/Pay/SuscribeFailure.jsx";
 
 function App() {
   /*User Google*/
@@ -52,14 +54,6 @@ function App() {
   const isLoggedClient = window.localStorage.getItem("loggedClient");
   const isLoggedAdmin = window.localStorage.getItem("loggedAdmin");
 
-  /*function RequireSession() {
-    return isLoggedTenant == true ? (
-      <Outlet />
-    ) : (
-      <Navigate to="/login" state={{ from: location }} replace />
-    );
-  }*/
-
   return (
     <div>
       <div>
@@ -72,10 +66,12 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="propertyDetail/:id" element={<CardDetail />} />
           <Route path="/aboutUs" element={<AboutUs />} />
-          <Route path="suscribe" element={<Suscribe />} />
+          
           <Route path="/ResumePay" element={<ResumePay />} />
           <Route path="/Pay/Success" element={<PaySuccess />} />
           <Route path="/Pay/Failure" element={<PayFailure />} />
+          <Route path="/Suscription/Success" element={<SuscribeSuccess />} />
+          <Route path="/Suscription/Failure" element={<SuscribeFailure />} />
 
           {/*si quieren agregar rutas publicas arriba de este mensaje*/}
 
@@ -85,7 +81,7 @@ function App() {
             <Route path="/forgotpassword" element={<ForgotPassword />} />
           </Route>
 
-          {/*<Route path="/userData" element={<UserDetails />} />*/}
+          <Route path="/UserDetails" element={<UserDetails />} />
           {/*Protect routes*/}
 
           <Route
@@ -113,6 +109,17 @@ function App() {
               )
             }
           />
+          <Route
+            path="/suscribe"
+            element={
+              isLoggedTenant == "true" || isLoggedAdmin == "true" ? (
+                <Suscribe />
+              ) : (
+                <Navigate to="/register" />
+              )
+            }
+          />
+          {/*<Route path="suscribe" element={<Suscribe />} /> */}
 
           <Route path="*" element={<Home />} />
         </Routes>

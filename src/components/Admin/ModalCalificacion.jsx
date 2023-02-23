@@ -70,14 +70,15 @@ export default function ModalCommentEdit({ closeModal, idComentario }) {
             className="button is-success"
             onClick={() => {
               Swal.fire({
-                title: "Brindando calificacion al alojamiento, continuar?",
+                title: "Estás calificacion al alojamiento, continuar?",
                 showDenyButton: true,
                 confirmButtonText: "Confirmar",
                 denyButtonText: `Cancelar`,
+                reverseButtons: true,
               }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
-                  Swal.fire("Cambios Guardados!", "", "success");
+                  Swal.fire("Cambios guardados", "", "success");
                   handleRating();
                   setTimeout(() => {
                     window.location.reload(false);

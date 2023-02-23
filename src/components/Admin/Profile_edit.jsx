@@ -51,7 +51,7 @@ export const Profile_edit = () => {
       const idClient = storedAuth?.idClient;
       const idTenant = storedAuth?.idTenant;
       setStore(storedAuth);
-      if (storedAuth.role === "Client") {
+      if (storedAuth && storedAuth.role === "Client") {
         const users = await getUserById(idClient);
         const abt = users?.data?.Aboutmes;
         const newValue = {
@@ -65,7 +65,10 @@ export const Profile_edit = () => {
 
         setUsers(users.data);
         setIdUser(idClient);
-      } else if (storedAuth.role === "Tenant" || storedAuth.role === "Admin") {
+      } else if (
+        (storedAuth && storedAuth.role === "Tenant") ||
+        (storedAuth && storedAuth.role === "Admin")
+      ) {
         const users = await getTenantById(idTenant);
         const abt = users?.data?.Aboutmes;
         const newValue = {
@@ -111,8 +114,9 @@ export const Profile_edit = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Si",
       cancelButtonText: "Cancelar",
+      confirmButtonText: "Confirmar",
+      reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
         if (form.hobbies.length > 5) {
@@ -187,7 +191,7 @@ export const Profile_edit = () => {
               <input
                 type="text"
                 name="fullName"
-                value={form?.fullName}
+                placeholder={users?.fullName}
                 id="name"
                 className="input"
                 onChange={(e) => setForm({ ...form, fullName: e.target.value })}
@@ -201,7 +205,7 @@ export const Profile_edit = () => {
                 type="text"
                 name="phone"
                 id="phone"
-                value={form?.phone}
+                placeholder={users?.phone}
                 className="input"
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
               />
@@ -214,7 +218,7 @@ export const Profile_edit = () => {
                 type="text"
                 name="from"
                 id="from"
-                value={form?.from}
+                placeholder={about?.from}
                 className="input"
                 onChange={(e) => setForm({ ...form, from: e.target.value })}
               />
@@ -226,7 +230,7 @@ export const Profile_edit = () => {
               <input
                 type="text"
                 name="age"
-                value={form?.age}
+                placeholder={about?.age}
                 id="age"
                 className="input"
                 onChange={(e) => setForm({ ...form, age: e.target.value })}
@@ -238,7 +242,7 @@ export const Profile_edit = () => {
             <div className="column">
               <textarea
                 type="text"
-                value={form?.description}
+                placeholder={about?.description}
                 name="description"
                 id="description"
                 className="textarea"

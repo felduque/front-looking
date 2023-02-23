@@ -34,6 +34,7 @@ export const ReservacionesCliente = () => {
           idClient: allPropierte.data.id,
           avatar: allPropierte.data.avatar,
           email: allPropierte.data.email,
+          fullName: allPropierte.data.fullName,
         }),
           setAllPropiertie(prop);
         setAllBookings(booking);
@@ -57,7 +58,7 @@ export const ReservacionesCliente = () => {
       </div>
 
       <div className="container-list-publish-tenant">
-        {allBookings.length > 0 ? (
+        {allBookings?.length > 0 ? (
           <div
             style={{
               display: "flex",
@@ -132,6 +133,7 @@ export const ReservacionesCliente = () => {
                           // showCancelButton: true,
                           confirmButtonText: "Si",
                           denyButtonText: `No`,
+                          reverseButtons: true,
                         }).then((result) => {
                           /* Read more about isConfirmed, isDenied below */
                           if (result.isConfirmed) {
@@ -139,6 +141,20 @@ export const ReservacionesCliente = () => {
                             axios.delete(
                               `https://looking.fly.dev/deleteBooking/${b.id}`
                             );
+                            axios(
+                              `https://looking.fly.dev/property/${b.booking_property}`
+                            ).then((result) => {
+                              console.log(result.data.title);
+                              axios.post(
+                                "https://looking.fly.dev/cancel/book",
+                                {
+                                  fullName: dataClient.fullName,
+                                  email: dataClient.email,
+                                  title: result.data.title,
+                                }
+                              );
+                            });
+
                             setTimeout(() => {
                               window.location.reload(false);
                             }, 2500);
