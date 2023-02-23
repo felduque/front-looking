@@ -50,9 +50,9 @@ function App() {
     }
   }, []);
 
-  const isLoggedTenant = window.localStorage.getItem("loggedTenant");
-  const isLoggedClient = window.localStorage.getItem("loggedClient");
-  const isLoggedAdmin = window.localStorage.getItem("loggedAdmin");
+  const isLoggedTenant = localStorage.getItem("loggedTenant");
+  const isLoggedClient = localStorage.getItem("loggedClient");
+  const isLoggedAdmin = localStorage.getItem("loggedAdmin");
 
   return (
     <div>
@@ -66,7 +66,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="propertyDetail/:id" element={<CardDetail />} />
           <Route path="/aboutUs" element={<AboutUs />} />
-          
+
           <Route path="/ResumePay" element={<ResumePay />} />
           <Route path="/Pay/Success" element={<PaySuccess />} />
           <Route path="/Pay/Failure" element={<PayFailure />} />

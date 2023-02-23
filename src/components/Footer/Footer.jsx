@@ -1,5 +1,6 @@
 import githubIcon from "../../assets/github-icon-footer.png";
 import aboutUsicon from "../../assets/aboutUs-icon.png";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -11,12 +12,10 @@ export default function Footer() {
         </p>
         <a href="https://github.com/felduque/lookingplace" target="_blank">
           <img src={githubIcon} width="35px" height="35px" />
-          
         </a>
-        <a href="/aboutUs" target="_blank">
-        <img src={aboutUsicon} width="35px" height="35px" />
-        </a>
-        
+        <Link to="/aboutUs" target="_blank">
+          <img src={aboutUsicon} width="35px" height="35px" />
+        </Link>
       </div>
     </footer>
   );

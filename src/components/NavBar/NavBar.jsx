@@ -56,7 +56,7 @@ export default function Navbar() {
   const signOut = async () => {
     logout();
     await signOutGoogle();
-    window.localStorage.clear();
+    localStorage.clear();
     window.location.reload();
   };
   return (
